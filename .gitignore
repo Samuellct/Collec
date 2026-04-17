@@ -9,6 +9,7 @@
 
 # ---- Fichiers de configuration ----
 !.gitignore
+!.gitattributes
 !.env.example
 !README.md
 !CHANGELOG.md

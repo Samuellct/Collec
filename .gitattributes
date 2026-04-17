@@ -1,0 +1,6 @@
+# Forcer LF pour tous les fichiers texte (cohérence cross-platform)
+* text=auto eol=lf
+
+# Fichiers Windows qui doivent rester CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
