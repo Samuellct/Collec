@@ -1,0 +1,42 @@
+name: Create PR
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+    branches:
+      - 'feature/**'
+      - 'fix/**'
+      - 'chore/**'
+
+jobs:
+  create-pr:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+          fetch-depth: 0
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: main
+          branch: ${{ github.event.workflow_run.head_branch }}
+          title: ${{ github.event.workflow_run.head_branch }}
+          body: |
+            PR générée automatiquement après succès CI.
+
+            **Branche :** `${{ github.event.workflow_run.head_branch }}`
+            **Commit :** `${{ github.event.workflow_run.head_sha }}`
+
+            Relire les commits avant de merger.
+          labels: ready-to-merge
+          draft: false

@@ -14,6 +14,10 @@
 !docker-compose.yml
 !docker-compose.prod.yml
 !Dockerfile
+!.dockerignore
+!vitest.config.ts
+!.releaserc.json
+!lighthouserc.json
 !.prettierrc
 !.prettierignore
 !.eslintrc.json

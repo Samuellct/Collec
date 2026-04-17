@@ -1,0 +1,40 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env.production
+    networks:
+      - collec-club-prod
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+    env_file:
+      - .env.production
+    environment:
+      POSTGRES_DB: collec_club
+      POSTGRES_USER: collec
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U collec -d collec_club']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - collec-club-prod
+    restart: unless-stopped
+
+volumes:
+  postgres_prod_data:
+
+networks:
+  collec-club-prod:
+    driver: bridge
