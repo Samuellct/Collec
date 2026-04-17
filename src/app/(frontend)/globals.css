@@ -1,0 +1,19 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-bg: #F4EFE6;
+  --color-ink: #121417;
+  --color-copper: #B85C38;
+  --color-brass: #B5964D;
+  --color-slate: #5E6772;
+  --color-bordeaux: #6F2F38;
+
+  --font-display: var(--font-fraunces), serif;
+  --font-serif: var(--font-source-serif-4), serif;
+  --font-sans: var(--font-source-sans-3), sans-serif;
+}
+
+html {
+  background-color: #F4EFE6;
+  color: #121417;
+}

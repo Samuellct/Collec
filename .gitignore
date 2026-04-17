@@ -18,11 +18,16 @@
 !.prettierignore
 !.eslintrc.json
 !.eslintignore
+!eslint.config.mjs
+!pnpm-workspace.yaml
+!postcss.config.mjs
+!next-env.d.ts
 
 # ---- Dossiers suivis (contenu inclus automatiquement) ----
 !.github/
 !src/
 !public/
+!migrations/
 
 # ---- Rappel des chemins exclus ----
 # node_modules/     → exclu par /*
