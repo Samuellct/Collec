@@ -29,13 +29,13 @@ pnpm dev
 
 ```
 src/
-  app/           — Next.js App Router
-  collections/   — Collections Payload CMS
-  modules/       — Modules métier (auth, users, media-items, collections, pathways, progress)
-  components/    — Composants React partagés
-  lib/           — Utilitaires
-public/          — Fichiers statiques
-.github/         — Workflows CI/CD
+  app/           - Next.js App Router
+  collections/   - Collections Payload CMS
+  modules/       - Modules métier (auth, users, media-items, collections, pathways, progress)
+  components/    - Composants React partagés
+  lib/           - Utilitaires
+public/          - Fichiers statiques
+.github/         - Workflows CI/CD
 ```
 
 ## Contribution

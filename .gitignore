@@ -1,13 +1,6 @@
-# ============================================================
-# Collec Club — .gitignore (whitelist approach)
-# Tout est exclu par défaut. Seuls les fichiers et dossiers
-# listés ci-dessous sont suivis par git.
-# ============================================================
-
-# Exclure tout à la racine
 /*
 
-# ---- Fichiers de configuration ----
+# ---- Fichiers de config ----
 !.gitignore
 !.gitattributes
 !.env.example
@@ -31,9 +24,7 @@
 !src/
 !public/
 
-# ---- Rappel des chemins exclus (pour lisibilité) ----
+# ---- Rappel des chemins exclus ----
 # node_modules/     → exclu par /*
 # .next/            → exclu par /*
 # .env              → exclu par /*
-# .env.local        → exclu par /*
-# .env.*.local      → exclu par /*
