@@ -1,0 +1,42 @@
+# ============================================================
+# Collec Club — .gitignore (whitelist approach)
+# Tout est exclu par défaut. Seuls les fichiers et dossiers
+# listés ci-dessous sont suivis par git.
+# ============================================================
+
+# Exclure tout à la racine
+/*
+
+# ---- Fichiers de configuration ----
+!.gitignore
+!.env.example
+!README.md
+!CHANGELOG.md
+!package.json
+!pnpm-lock.yaml
+!tsconfig.json
+!next.config.ts
+!payload.config.ts
+!docker-compose.yml
+!docker-compose.prod.yml
+!Dockerfile
+!.prettierrc
+!.prettierignore
+!.eslintrc.json
+!.eslintignore
+
+# ---- Dossiers suivis (contenu inclus automatiquement) ----
+!.github/
+!src/
+!public/
+
+# ---- Exclusions dans les dossiers suivis ----
+# Fichiers de types auto-générés par Payload (régénérés à chaque build)
+src/payload-types.ts
+
+# ---- Rappel des chemins exclus (pour lisibilité) ----
+# node_modules/     → exclu par /*
+# .next/            → exclu par /*
+# .env              → exclu par /*
+# .env.local        → exclu par /*
+# .env.*.local      → exclu par /*
