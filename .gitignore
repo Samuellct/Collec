@@ -30,10 +30,6 @@
 !src/
 !public/
 
-# ---- Exclusions dans les dossiers suivis ----
-# Fichiers de types auto-générés par Payload (régénérés à chaque build)
-src/payload-types.ts
-
 # ---- Rappel des chemins exclus (pour lisibilité) ----
 # node_modules/     → exclu par /*
 # .next/            → exclu par /*
