@@ -3,12 +3,14 @@ import { postgresAdapter } from '@payloadcms/db-postgres'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
+import { Admins } from './modules/auth/collections/Admins.ts'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
   admin: {
+    user: 'admins',
     importMap: {
       baseDir: path.resolve(dirname),
     },
@@ -22,7 +24,7 @@ export default buildConfig({
     push: false,
     migrationDir: path.resolve(dirname, '../migrations'),
   }),
-  collections: [],
+  collections: [Admins],
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
