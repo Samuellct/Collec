@@ -1,16 +1,27 @@
 import type { CollectionConfig } from 'payload'
 import { isAdmin, isSelfOrAdmin } from '../access/is-admin.ts'
+import { generateVerificationEmailHTML, generateVerificationEmailSubject } from '../email/verification-email.ts'
+import { generateResetPasswordEmailHTML, generateResetPasswordEmailSubject } from '../email/reset-password-email.ts'
 
 export const Customers: CollectionConfig = {
   slug: 'customers',
   auth: {
-    verify: true,
+    verify: {
+      generateEmailHTML: (args) =>
+        generateVerificationEmailHTML({ token: args?.token ?? '' }),
+      generateEmailSubject: () => generateVerificationEmailSubject(),
+    },
     maxLoginAttempts: 5,
     lockTime: 600000,
     tokenExpiration: 7200,
     cookies: {
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'Strict',
+    },
+    forgotPassword: {
+      generateEmailHTML: (args) =>
+        generateResetPasswordEmailHTML({ token: args?.token ?? '' }),
+      generateEmailSubject: () => generateResetPasswordEmailSubject(),
     },
   },
   admin: {
