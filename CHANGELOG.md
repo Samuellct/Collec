@@ -1,3 +1,22 @@
+# [0.3.0](https://github.com/Samuellct/Collec/compare/v0.2.0...v0.3.0) (2026-04-18)
+
+
+### Bug Fixes
+
+* **cicd:** remove missing ready-to-merge label from create-pr workflow ([7b4f779](https://github.com/Samuellct/Collec/commit/7b4f779cb09428fe999fc8b8ee8f46498a370ed9))
+* **ui:** restore French accents across all auth pages ([a1e214c](https://github.com/Samuellct/Collec/commit/a1e214cec25739d0e569ab9eaa43f61093b80007))
+
+
+### Features
+
+* **auth:** add current-user helper and auth menu in layout ([40108a4](https://github.com/Samuellct/Collec/commit/40108a430915718deb25c2e882ed98bc1c608830))
+* **auth:** add forgot-password and styled reset-password pages ([8bfc431](https://github.com/Samuellct/Collec/commit/8bfc431e3f6a75997371296ad3378cac13ce3280))
+* **auth:** add login page with lockout-aware error handling ([005828d](https://github.com/Samuellct/Collec/commit/005828d0e8a5e05699f9bc030295dc9f5e6edcc9))
+* **auth:** add register and verify-email-sent pages ([59da35e](https://github.com/Samuellct/Collec/commit/59da35ec25387fa3474a5508ee0da7ce7bddf031))
+* **auth:** add settings page with password change ([130d8b4](https://github.com/Samuellct/Collec/commit/130d8b4c95de90c81ef430798db2d9e7bfa87b50))
+* **auth:** replace verify-email route handler with styled page ([48ad432](https://github.com/Samuellct/Collec/commit/48ad432d93f1d23e53497ba532c5e6793cb6d78e))
+* **ui:** add auth form primitives and cn helper ([de41a1e](https://github.com/Samuellct/Collec/commit/de41a1eceec9d073fe76b062d1703ca37eb2fe92))
+
 # [0.2.0](https://github.com/Samuellct/Collec/compare/v0.1.0...v0.2.0) (2026-04-18)
 
 
