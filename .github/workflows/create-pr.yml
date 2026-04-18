@@ -36,5 +36,4 @@ jobs:
           **Commit :** \`$SHA\`
 
           Relire les commits avant de merger." \
-            --label ready-to-merge \
           || echo "PR already exists or branch is up to date, skipping."
