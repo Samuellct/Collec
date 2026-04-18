@@ -1,17 +1,47 @@
 'use client'
 
 import { useState, Suspense } from 'react'
-import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { AuthCard } from '@/components/ui/AuthCard'
+import { Label } from '@/components/ui/Label'
+import { Input } from '@/components/ui/Input'
+import { Button } from '@/components/ui/Button'
+import { FieldError } from '@/components/ui/FieldError'
 
 function ResetPasswordForm() {
+  const router = useRouter()
   const searchParams = useSearchParams()
   const token = searchParams.get('token') ?? ''
+
   const [password, setPassword] = useState('')
-  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
-  const [message, setMessage] = useState('')
+  const [confirm, setConfirm] = useState('')
+  const [error, setError] = useState('')
+  const [pending, setPending] = useState(false)
+
+  if (!token) {
+    return (
+      <AuthCard title="Lien invalide">
+        <p className="font-serif text-[1rem] leading-[1.65] text-slate">
+          Ce lien de reinitialisation est invalide ou a expire.
+        </p>
+        <div className="mt-8">
+          <Link href="/forgot-password">
+            <Button variant="secondary">Demander un nouveau lien</Button>
+          </Link>
+        </div>
+      </AuthCard>
+    )
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (password !== confirm) {
+      setError('Les mots de passe ne correspondent pas.')
+      return
+    }
+    setPending(true)
+    setError('')
     try {
       const res = await fetch('/api/customers/reset-password', {
         method: 'POST',
@@ -19,43 +49,53 @@ function ResetPasswordForm() {
         body: JSON.stringify({ token, password }),
       })
       if (res.ok) {
-        setStatus('success')
-        setMessage('Mot de passe mis a jour. Tu peux te connecter.')
+        router.push('/login?reset=success')
       } else {
         const data = (await res.json()) as { errors?: { message: string }[] }
-        setStatus('error')
-        setMessage(data.errors?.[0]?.message ?? 'Lien invalide ou expire.')
+        setError(data.errors?.[0]?.message ?? 'Lien invalide ou expire.')
       }
     } catch {
-      setStatus('error')
-      setMessage('Une erreur est survenue.')
+      setError('Une erreur est survenue. Reessaie.')
+    } finally {
+      setPending(false)
     }
   }
 
-  if (!token) {
-    return <p>Lien invalide.</p>
-  }
-
   return (
-    <form onSubmit={handleSubmit} style={{ padding: 24, fontFamily: 'sans-serif' }}>
-      <h1>Nouveau mot de passe</h1>
-      <p style={{ fontSize: 12, color: '#888' }}>
-        Page temporaire (etape 03) — UI complete a l&apos;etape 04.
-      </p>
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Nouveau mot de passe (8 caracteres min)"
-        minLength={8}
-        required
-        style={{ display: 'block', marginBottom: 12, padding: 8, width: 300 }}
-      />
-      <button type="submit">Valider</button>
-      {status !== 'idle' && (
-        <p style={{ color: status === 'success' ? 'green' : 'red' }}>{message}</p>
-      )}
-    </form>
+    <AuthCard title="Nouveau mot de passe">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="password">Nouveau mot de passe</Label>
+          <Input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="8 caracteres minimum"
+            minLength={8}
+            required
+            autoComplete="new-password"
+          />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="confirm">Confirme le mot de passe</Label>
+          <Input
+            id="confirm"
+            type="password"
+            value={confirm}
+            onChange={(e) => setConfirm(e.target.value)}
+            placeholder="Meme mot de passe"
+            minLength={8}
+            required
+            autoComplete="new-password"
+          />
+        </div>
+        <FieldError message={error} />
+        <Button type="submit" pending={pending}>
+          Valider
+        </Button>
+      </form>
+    </AuthCard>
   )
 }
 
