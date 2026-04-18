@@ -41,10 +41,10 @@ function LoginForm() {
         router.push(next)
         router.refresh()
       } else {
-        setError('Identifiants invalides ou compte verrouille. Reessaie dans quelques minutes.')
+        setError('Identifiants invalides ou compte verrouillé. Réessaie dans quelques minutes.')
       }
     } catch {
-      setError('Une erreur est survenue. Reessaie.')
+      setError('Une erreur est survenue. Réessaie.')
     } finally {
       setPending(false)
     }
@@ -55,7 +55,7 @@ function LoginForm() {
       {resetSuccess && (
         <div className="mb-6 rounded bg-[rgba(184,92,56,0.10)] px-4 py-3">
           <p className="font-sans text-[0.88rem] text-copper">
-            Mot de passe mis a jour. Tu peux te connecter.
+            Mot de passe mis à jour. Tu peux te connecter.
           </p>
         </div>
       )}
@@ -76,7 +76,7 @@ function LoginForm() {
           <div className="flex items-center justify-between">
             <Label htmlFor="password">Mot de passe</Label>
             <Link href="/forgot-password" className="font-sans text-[0.78rem] text-slate hover:text-copper transition-colors">
-              Mot de passe oublie ?
+              Mot de passe oublié ?
             </Link>
           </div>
           <Input

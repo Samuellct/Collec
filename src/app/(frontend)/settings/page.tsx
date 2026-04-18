@@ -11,7 +11,7 @@ export default async function SettingsPage() {
   return (
     <main className="mx-auto max-w-[1080px] px-6 py-16">
       <h1 className="font-display text-[2.2rem] font-bold leading-[1.05] tracking-[-0.04em] text-ink">
-        Parametres
+        Paramètres
       </h1>
       <div className="mt-12 max-w-[420px]">
         <section>

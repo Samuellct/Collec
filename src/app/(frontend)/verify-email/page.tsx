@@ -34,13 +34,13 @@ export default async function VerifyEmailPage({ searchParams }: PageProps) {
 
   if (state === 'success') {
     return (
-      <AuthCard title="Compte active">
+      <AuthCard title="Compte activé">
         <div
           className="border-l-[3px] border-copper bg-[rgba(255,255,255,0.55)] px-5 py-5"
           style={{ borderRadius: '0 4px 4px 0' }}
         >
           <p className="font-serif text-[1rem] leading-[1.65] text-ink">
-            Ton adresse email a ete verifiee. Tu peux maintenant te connecter.
+            Ton adresse email a été vérifiée. Tu peux maintenant te connecter.
           </p>
         </div>
         <div className="mt-8">
@@ -53,9 +53,9 @@ export default async function VerifyEmailPage({ searchParams }: PageProps) {
   }
 
   return (
-    <AuthCard title="Lien expire ou invalide">
+    <AuthCard title="Lien expiré ou invalide">
       <p className="font-serif text-[1rem] leading-[1.65] text-slate">
-        Ce lien de verification est invalide ou a expire. Inscris-toi a nouveau pour recevoir un nouvel email.
+        Ce lien de vérification est invalide ou a expiré. Inscris-toi à nouveau pour recevoir un nouvel email.
       </p>
       <div className="mt-8">
         <Link href="/register">

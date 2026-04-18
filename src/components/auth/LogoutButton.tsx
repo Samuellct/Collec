@@ -14,7 +14,7 @@ export function LogoutButton() {
 
   return (
     <Button variant="secondary" onClick={handleLogout}>
-      Deconnexion
+      Déconnexion
     </Button>
   )
 }

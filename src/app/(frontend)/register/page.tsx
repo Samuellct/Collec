@@ -35,17 +35,17 @@ export default function RegisterPage() {
       if (res.status === 201) {
         router.push(`/verify-email-sent?email=${encodeURIComponent(email)}`)
       } else {
-        setError('Inscription impossible. Verifie les informations et reessaie.')
+        setError('Inscription impossible. Vérifie les informations et réessaie.')
       }
     } catch {
-      setError('Une erreur est survenue. Reessaie.')
+      setError('Une erreur est survenue. Réessaie.')
     } finally {
       setPending(false)
     }
   }
 
   return (
-    <AuthCard title="Cree ton compte" subtitle="Rejoins Collec Club et commence ta collec.">
+    <AuthCard title="Crée ton compte" subtitle="Rejoins Collec Club et commence ta collec.">
       <form onSubmit={handleSubmit} className="flex flex-col gap-5">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="email">Adresse email</Label>
@@ -66,7 +66,7 @@ export default function RegisterPage() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="8 caracteres minimum"
+            placeholder="8 caractères minimum"
             minLength={8}
             required
             autoComplete="new-password"
@@ -78,11 +78,11 @@ export default function RegisterPage() {
         />
         <FieldError message={error} />
         <Button type="submit" pending={pending}>
-          Creer mon compte
+          Créer mon compte
         </Button>
       </form>
       <p className="mt-6 font-sans text-[0.82rem] text-slate">
-        Deja inscrit ?{' '}
+        Déjà inscrit ?{' '}
         <Link href="/login" className="text-copper hover:text-[#9A4C2E] transition-colors">
           Se connecter
         </Link>

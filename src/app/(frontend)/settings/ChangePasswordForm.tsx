@@ -51,10 +51,10 @@ export function ChangePasswordForm({ userId, userEmail }: ChangePasswordFormProp
         setNewPassword('')
         setConfirmPassword('')
       } else {
-        setError('Impossible de mettre a jour le mot de passe.')
+        setError('Impossible de mettre à jour le mot de passe.')
       }
     } catch {
-      setError('Une erreur est survenue. Reessaie.')
+      setError('Une erreur est survenue. Réessaie.')
     } finally {
       setPending(false)
     }
@@ -80,7 +80,7 @@ export function ChangePasswordForm({ userId, userEmail }: ChangePasswordFormProp
           type="password"
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
-          placeholder="8 caracteres minimum"
+          placeholder="8 caractères minimum"
           minLength={8}
           required
           autoComplete="new-password"
@@ -100,7 +100,7 @@ export function ChangePasswordForm({ userId, userEmail }: ChangePasswordFormProp
       </div>
       <FieldError message={error} />
       {success && (
-        <p className="font-sans text-[0.88rem] text-copper">Mot de passe mis a jour.</p>
+        <p className="font-sans text-[0.88rem] text-copper">Mot de passe mis à jour.</p>
       )}
       <Button type="submit" pending={pending} className="self-start">
         Changer le mot de passe

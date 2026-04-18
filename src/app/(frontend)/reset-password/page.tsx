@@ -23,7 +23,7 @@ function ResetPasswordForm() {
     return (
       <AuthCard title="Lien invalide">
         <p className="font-serif text-[1rem] leading-[1.65] text-slate">
-          Ce lien de reinitialisation est invalide ou a expire.
+          Ce lien de réinitialisation est invalide ou a expiré.
         </p>
         <div className="mt-8">
           <Link href="/forgot-password">
@@ -52,10 +52,10 @@ function ResetPasswordForm() {
         router.push('/login?reset=success')
       } else {
         const data = (await res.json()) as { errors?: { message: string }[] }
-        setError(data.errors?.[0]?.message ?? 'Lien invalide ou expire.')
+        setError(data.errors?.[0]?.message ?? 'Lien invalide ou expiré.')
       }
     } catch {
-      setError('Une erreur est survenue. Reessaie.')
+      setError('Une erreur est survenue. Réessaie.')
     } finally {
       setPending(false)
     }
@@ -71,7 +71,7 @@ function ResetPasswordForm() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="8 caracteres minimum"
+            placeholder="8 caractères minimum"
             minLength={8}
             required
             autoComplete="new-password"
@@ -84,7 +84,7 @@ function ResetPasswordForm() {
             type="password"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
-            placeholder="Meme mot de passe"
+            placeholder="Même mot de passe"
             minLength={8}
             required
             autoComplete="new-password"
