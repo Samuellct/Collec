@@ -32,6 +32,7 @@
 !src/
 !public/
 !migrations/
+!docs/
 
 # ---- Rappel des chemins exclus ----
 # node_modules/     → exclu par /*

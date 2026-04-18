@@ -15,28 +15,26 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     permissions:
-      contents: write
       pull-requests: write
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_branch }}
-          fetch-depth: 0
-
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v8
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: main
-          branch: ${{ github.event.workflow_run.head_branch }}
-          title: ${{ github.event.workflow_run.head_branch }}
-          body: |
-            PR générée automatiquement après succès CI.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
+          SHA: ${{ github.event.workflow_run.head_sha }}
+          REPO: ${{ github.repository }}
+        run: |
+          gh pr create \
+            --repo "$REPO" \
+            --base main \
+            --head "$BRANCH" \
+            --title "$BRANCH" \
+            --body "PR generee automatiquement apres succes CI.
 
-            **Branche :** `${{ github.event.workflow_run.head_branch }}`
-            **Commit :** `${{ github.event.workflow_run.head_sha }}`
+          **Branche :** \`$BRANCH\`
+          **Commit :** \`$SHA\`
 
-            Relire les commits avant de merger.
-          labels: ready-to-merge
-          draft: false
+          Relire les commits avant de merger." \
+            --label ready-to-merge \
+          || echo "PR already exists or branch is up to date, skipping."
