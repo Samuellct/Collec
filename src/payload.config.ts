@@ -4,6 +4,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 import { Admins } from './modules/auth/collections/Admins.ts'
+import { Customers } from './modules/auth/collections/Customers.ts'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -24,7 +25,7 @@ export default buildConfig({
     push: false,
     migrationDir: path.resolve(dirname, '../migrations'),
   }),
-  collections: [Admins],
+  collections: [Admins, Customers],
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
