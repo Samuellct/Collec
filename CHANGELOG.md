@@ -1,3 +1,12 @@
+# [0.5.0](https://github.com/Samuellct/Collec/compare/v0.4.0...v0.5.0) (2026-04-19)
+
+
+### Features
+
+* **collections:** add CollectionItems junction collection ([0f21be3](https://github.com/Samuellct/Collec/commit/0f21be31491ef2fbc6d8e042f4c968ce775bdf56))
+* **collections:** add Collections collection with editorial fields ([ac4f930](https://github.com/Samuellct/Collec/commit/ac4f930081c083db3699bb8886b5dbd73cb761f8))
+* **media-items:** add release_date field for chronological ordering ([c5bcd97](https://github.com/Samuellct/Collec/commit/c5bcd97ea095fcb021ef2028c466f8cad7b52429))
+
 # [0.4.0](https://github.com/Samuellct/Collec/compare/v0.3.0...v0.4.0) (2026-04-19)
 
 
