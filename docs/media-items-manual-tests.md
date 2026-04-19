@@ -68,16 +68,15 @@ echo $customerToken   # doit afficher un JWT non vide
 - [x] Résultat : `POST /api/media-items/import-tmdb 403`
 
 ```powershell
-$r = Invoke-WebRequest `
-  -Uri "http://localhost:3001/api/media-items/import-tmdb" `
-  -Method POST `
-  -Headers @{ Authorization = "Bearer $customerToken" } `
-  -ContentType "application/json" `
-  -Body '{"tmdbId":438631,"mediaType":"movie"}' `
-  -SkipHttpErrorCheck
-
-echo $r.StatusCode          # attendu : 403
-echo $r.Content             # attendu : {"error":"Unauthorized"}
+try {
+    $r = Invoke-WebRequest `
+      -Uri "http://localhost:3001/api/media-items/import-tmdb" `
+      -Method POST `
+      -Headers @{ Authorization = "Bearer $customerToken" } `
+      -ContentType "application/json" `
+      -Body '{"tmdbId":438631,"mediaType":"movie"}'
+} catch { $r = $_.Exception.Response }
+[int]$r.StatusCode   # attendu : 403
 ```
 
 ### 7.3 Customer -> GET search-tmdb -> 403 attendu
@@ -85,12 +84,12 @@ echo $r.Content             # attendu : {"error":"Unauthorized"}
 - [x] Résultat : `GET /api/media-items/search-tmdb?q=Dune 403`
 
 ```powershell
-$r = Invoke-WebRequest `
-  -Uri "http://localhost:3001/api/media-items/search-tmdb?q=Dune" `
-  -Headers @{ Authorization = "Bearer $customerToken" } `
-  -SkipHttpErrorCheck
-
-echo $r.StatusCode          # attendu : 403
+try {
+    $r = Invoke-WebRequest `
+      -Uri "http://localhost:3001/api/media-items/search-tmdb?q=Dune" `
+      -Headers @{ Authorization = "Bearer $customerToken" }
+} catch { $r = $_.Exception.Response }
+[int]$r.StatusCode   # attendu : 403
 ```
 
 ### 7.4 Sans token -> GET /api/media-items -> 200 attendu (lecture publique)
@@ -98,11 +97,8 @@ echo $r.StatusCode          # attendu : 403
 - [x] Résultat : `GET /api/media-items 200`
 
 ```powershell
-$r = Invoke-WebRequest `
-  -Uri "http://localhost:3001/api/media-items" `
-  -SkipHttpErrorCheck
-
-echo $r.StatusCode          # attendu : 200
+$r = Invoke-WebRequest -Uri "http://localhost:3001/api/media-items"
+echo $r.StatusCode   # attendu : 200
 ```
 
 ---
@@ -129,16 +125,15 @@ echo $adminToken    # doit afficher un JWT non vide
 - [x] Résultat : `POST /api/media-items/import-tmdb 400`
 
 ```powershell
-$r = Invoke-WebRequest `
-  -Uri "http://localhost:3001/api/media-items/import-tmdb" `
-  -Method POST `
-  -Headers @{ Authorization = "Bearer $adminToken" } `
-  -ContentType "application/json" `
-  -Body '{}' `
-  -SkipHttpErrorCheck
-
-echo $r.StatusCode          # attendu : 400
-echo $r.Content             # attendu : message d'erreur sur tmdbId/mediaType
+try {
+    $r = Invoke-WebRequest `
+      -Uri "http://localhost:3001/api/media-items/import-tmdb" `
+      -Method POST `
+      -Headers @{ Authorization = "Bearer $adminToken" } `
+      -ContentType "application/json" `
+      -Body '{}'
+} catch { $r = $_.Exception.Response }
+[int]$r.StatusCode   # attendu : 400
 ```
 
 ### 8.2 mediaType invalide -> 400 attendu
@@ -146,15 +141,15 @@ echo $r.Content             # attendu : message d'erreur sur tmdbId/mediaType
 - [x] Résultat : `400 {"error":"Invalid body: tmdbId (number) and mediaType (movie|tv) required"}`
 
 ```powershell
-$r = Invoke-WebRequest `
-  -Uri "http://localhost:3001/api/media-items/import-tmdb" `
-  -Method POST `
-  -Headers @{ Authorization = "Bearer $adminToken" } `
-  -ContentType "application/json" `
-  -Body '{"tmdbId":438631,"mediaType":"livre"}' `
-  -SkipHttpErrorCheck
-
-echo $r.StatusCode          # attendu : 400
+try {
+    $r = Invoke-WebRequest `
+      -Uri "http://localhost:3001/api/media-items/import-tmdb" `
+      -Method POST `
+      -Headers @{ Authorization = "Bearer $adminToken" } `
+      -ContentType "application/json" `
+      -Body '{"tmdbId":438631,"mediaType":"livre"}'
+} catch { $r = $_.Exception.Response }
+[int]$r.StatusCode   # attendu : 400
 ```
 
 ### 8.3 Query vide -> results vide, pas d'erreur 500
@@ -164,8 +159,7 @@ echo $r.StatusCode          # attendu : 400
 ```powershell
 $r = Invoke-WebRequest `
   -Uri "http://localhost:3001/api/media-items/search-tmdb?q=" `
-  -Headers @{ Authorization = "Bearer $adminToken" } `
-  -SkipHttpErrorCheck
+  -Headers @{ Authorization = "Bearer $adminToken" }
 
 echo $r.StatusCode                                  # attendu : 200
 ($r.Content | ConvertFrom-Json).results.Count       # attendu : 0

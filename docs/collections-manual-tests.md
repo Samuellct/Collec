@@ -16,11 +16,12 @@ Vérifier que les 3 nouvelles migrations s'appliquent sans erreur :
 - `20260419_180857_add_collections`
 - `20260419_180940_add_collection_items`
 
+- [ ] Les 3 migrations s'appliquent sans erreur.
+
 ## 1. Structure des tables
 
 ```powershell
-# Se connecter au conteneur postgres
-docker exec -it projet_plateforme_culturelle-postgres-1 psql -U payload -d collec_club
+docker exec -it 03_developpement-postgres-1 psql -U payload -d collec_club
 ```
 
 ```sql
@@ -56,8 +57,10 @@ $loginAdmin = Invoke-RestMethod `
   -Body '{"email":"admin@collec-club.fr","password":"ton-mot-de-passe-admin"}'
 
 $adminToken = $loginAdmin.token
-echo $adminToken
+echo $adminToken   # doit afficher un JWT non vide
 ```
+
+- [ ] `$adminToken` non vide.
 
 ## 3. Re-sync TMDB pour populer release_date
 
@@ -72,7 +75,7 @@ Re-importer Dune et Breaking Bad depuis le panel TMDB dans l'admin.
 - [ ] Naviguer vers `/admin/collections/collections` -> bouton "Create New".
 - [ ] Remplir : `slug` = `filmographie-denis-villeneuve`, `title` = "La filmographie de Denis Villeneuve", `short_description` = "Toutes les réalisations du cinéaste québécois, de Maelström à Dune." (< 140 chars), `type` = "Filmographie complète", `accessibility_level` = "Accessible", `is_published` = false.
 - [ ] Sauvegarder -> "Updated successfully."
-- [ ] Tester la validation : `short_description` de 141 caractères -> erreur de validation attendue.
+- [ ] Tester la validation : saisir une `short_description` de 141 caractères -> erreur de validation attendue.
 
 ## 5. Ajout d'items via l'onglet Items
 
@@ -82,23 +85,26 @@ Re-importer Dune et Breaking Bad depuis le panel TMDB dans l'admin.
 
 ## 6. Test unicité (doublon refusé)
 
+Récupérer les ids réels depuis l'admin (URL de l'edit view) et remplacer ci-dessous.
+
 ```powershell
-# Tenter d'ajouter le même media_item une 2e fois dans la même collection
 $collectionId = 1   # adapter selon l'id réel
 $mediaItemId  = 1   # adapter selon l'id réel (Dune)
 
-$r = Invoke-WebRequest `
-  -Uri "http://localhost:3001/api/collection-items" `
-  -Method POST `
-  -Headers @{ Authorization = "Bearer $adminToken" } `
-  -ContentType "application/json" `
-  -Body "{`"collection`":$collectionId,`"media_item`":$mediaItemId}" `
-  -SkipHttpErrorCheck
-
-echo $r.StatusCode   # attendu : 400 ou 500 (violation contrainte unique)
+try {
+    $r = Invoke-WebRequest `
+      -Uri "http://localhost:3001/api/collection-items" `
+      -Method POST `
+      -Headers @{ Authorization = "Bearer $adminToken" } `
+      -ContentType "application/json" `
+      -Body "{`"collection`":$collectionId,`"media_item`":$mediaItemId}"
+} catch {
+    $r = $_.Exception.Response
+}
+[int]$r.StatusCode   # attendu : 400 ou 500 (violation contrainte unique)
 ```
 
-- [ ] Résultat : erreur (violation de l'index unique `collection_media_item_idx`).
+- [ ] Résultat : status code 400 ou 500 (violation de l'index unique `collection_media_item_idx`).
 
 ## 7. Lecture publique conditionnelle
 
@@ -108,14 +114,13 @@ echo $r.StatusCode   # attendu : 400 ou 500 (violation contrainte unique)
 $slug = "filmographie-denis-villeneuve"
 
 $r = Invoke-WebRequest `
-  -Uri "http://localhost:3001/api/collections?where[slug][equals]=$slug" `
-  -SkipHttpErrorCheck
+  -Uri "http://localhost:3001/api/collections?where[slug][equals]=$slug"
 
-echo $r.StatusCode                                    # attendu : 200
-($r.Content | ConvertFrom-Json).totalDocs             # attendu : 0
+echo $r.StatusCode                          # attendu : 200
+($r.Content | ConvertFrom-Json).totalDocs   # attendu : 0
 ```
 
-- [ ] Résultat : `totalDocs = 0` (collection non publiée invisible).
+- [ ] Résultat : `200`, `totalDocs = 0` (collection non publiée invisible au public).
 
 ### 7.2 Publier la collection
 
@@ -125,45 +130,45 @@ echo $r.StatusCode                                    # attendu : 200
 
 ```powershell
 $r = Invoke-WebRequest `
-  -Uri "http://localhost:3001/api/collections?where[slug][equals]=$slug" `
-  -SkipHttpErrorCheck
+  -Uri "http://localhost:3001/api/collections?where[slug][equals]=$slug"
 
-echo $r.StatusCode                                    # attendu : 200
-($r.Content | ConvertFrom-Json).totalDocs             # attendu : 1
+echo $r.StatusCode                          # attendu : 200
+($r.Content | ConvertFrom-Json).totalDocs   # attendu : 1
 ```
 
-- [ ] Résultat : `totalDocs = 1`.
+- [ ] Résultat : `200`, `totalDocs = 1`.
 
 ### 7.4 Admin voit tout (publiée ou non)
 
-```powershell
-# Dépublier la collection
-# ...puis :
+Dépublier la collection (décocher `is_published`, sauvegarder) puis :
 
+```powershell
 $r = Invoke-WebRequest `
   -Uri "http://localhost:3001/api/collections?where[slug][equals]=$slug" `
-  -Headers @{ Authorization = "Bearer $adminToken" } `
-  -SkipHttpErrorCheck
+  -Headers @{ Authorization = "Bearer $adminToken" }
 
-($r.Content | ConvertFrom-Json).totalDocs             # attendu : 1
+echo $r.StatusCode                          # attendu : 200
+($r.Content | ConvertFrom-Json).totalDocs   # attendu : 1
 ```
 
 - [ ] Résultat : `totalDocs = 1` même avec `is_published = false`.
 
 ## 8. Sécurité : customer ne peut pas créer une collection
 
-Prérequis : token customer obtenu comme à l'étape 05.
+Prérequis : token customer (`$customerToken`) obtenu comme à l'étape 05 (section 7.1 de `media-items-manual-tests.md`).
 
 ```powershell
-$r = Invoke-WebRequest `
-  -Uri "http://localhost:3001/api/collections" `
-  -Method POST `
-  -Headers @{ Authorization = "Bearer $customerToken" } `
-  -ContentType "application/json" `
-  -Body '{"slug":"test","title":"Test","short_description":"Test","type":"thematic","accessibility_level":"accessible"}' `
-  -SkipHttpErrorCheck
-
-echo $r.StatusCode   # attendu : 403
+try {
+    $r = Invoke-WebRequest `
+      -Uri "http://localhost:3001/api/collections" `
+      -Method POST `
+      -Headers @{ Authorization = "Bearer $customerToken" } `
+      -ContentType "application/json" `
+      -Body '{"slug":"test","title":"Test","short_description":"Test","type":"thematic","accessibility_level":"accessible"}'
+} catch {
+    $r = $_.Exception.Response
+}
+[int]$r.StatusCode   # attendu : 403
 ```
 
 - [ ] Résultat : 403.
