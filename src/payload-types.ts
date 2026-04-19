@@ -70,6 +70,9 @@ export interface Config {
   collections: {
     admins: Admin;
     customers: Customer;
+    'media-types': MediaType;
+    'media-items': MediaItem;
+    'external-ids': ExternalId;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -79,6 +82,9 @@ export interface Config {
   collectionsSelect: {
     admins: AdminsSelect<false> | AdminsSelect<true>;
     customers: CustomersSelect<false> | CustomersSelect<true>;
+    'media-types': MediaTypesSelect<false> | MediaTypesSelect<true>;
+    'media-items': MediaItemsSelect<false> | MediaItemsSelect<true>;
+    'external-ids': ExternalIdsSelect<false> | ExternalIdsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -190,6 +196,69 @@ export interface Customer {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media-types".
+ */
+export interface MediaType {
+  id: number;
+  /**
+   * Identifiant stable, ne pas modifier après création.
+   */
+  slug: string;
+  /**
+   * Libellé affiché (ex: Film, Série)
+   */
+  label: string;
+  display_order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media-items".
+ */
+export interface MediaItem {
+  id: number;
+  /**
+   * Titre FR. Modifiable manuellement — un re-sync TMDB écrasera cette valeur.
+   */
+  title: string;
+  original_title?: string | null;
+  year?: number | null;
+  /**
+   * Minutes pour les films, nombre de saisons pour les séries.
+   */
+  duration?: number | null;
+  /**
+   * Synopsis. Modifiable manuellement — un re-sync TMDB écrasera cette valeur.
+   */
+  synopsis?: string | null;
+  /**
+   * URL absolue image.tmdb.org. Modifiable manuellement — un re-sync TMDB écrasera cette valeur.
+   */
+  poster_url?: string | null;
+  media_type: number | MediaType;
+  tmdb_id?: number | null;
+  imdb_id?: string | null;
+  source_of_truth?: 'tmdb' | null;
+  source_last_synced_at?: string | null;
+  source_expires_at?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "external-ids".
+ */
+export interface ExternalId {
+  id: number;
+  media_item: number | MediaItem;
+  provider: 'tmdb' | 'imdb';
+  external_id: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -219,6 +288,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'customers';
         value: number | Customer;
+      } | null)
+    | ({
+        relationTo: 'media-types';
+        value: number | MediaType;
+      } | null)
+    | ({
+        relationTo: 'media-items';
+        value: number | MediaItem;
+      } | null)
+    | ({
+        relationTo: 'external-ids';
+        value: number | ExternalId;
       } | null);
   globalSlug?: string | null;
   user:
@@ -317,6 +398,48 @@ export interface CustomersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media-types_select".
+ */
+export interface MediaTypesSelect<T extends boolean = true> {
+  slug?: T;
+  label?: T;
+  display_order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media-items_select".
+ */
+export interface MediaItemsSelect<T extends boolean = true> {
+  title?: T;
+  original_title?: T;
+  year?: T;
+  duration?: T;
+  synopsis?: T;
+  poster_url?: T;
+  media_type?: T;
+  tmdb_id?: T;
+  imdb_id?: T;
+  source_of_truth?: T;
+  source_last_synced_at?: T;
+  source_expires_at?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "external-ids_select".
+ */
+export interface ExternalIdsSelect<T extends boolean = true> {
+  media_item?: T;
+  provider?: T;
+  external_id?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
