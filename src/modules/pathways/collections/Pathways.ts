@@ -92,5 +92,14 @@ export const Pathways: CollectionConfig = {
       defaultValue: 0,
       index: true,
     },
+    {
+      name: 'steps',
+      type: 'join',
+      collection: 'pathway-steps',
+      on: 'pathway',
+      admin: {
+        defaultColumns: ['position', 'media_item', 'step_title'],
+      },
+    },
   ],
 }

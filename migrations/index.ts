@@ -7,6 +7,7 @@ import * as migration_20260419_165648_add_release_date_to_media_items from './20
 import * as migration_20260419_180857_add_collections from './20260419_180857_add_collections';
 import * as migration_20260419_180940_add_collection_items from './20260419_180940_add_collection_items';
 import * as migration_20260419_190000_add_pathways from './20260419_190000_add_pathways';
+import * as migration_20260419_190100_add_pathway_steps from './20260419_190100_add_pathway_steps';
 
 export const migrations = [
   {
@@ -53,5 +54,10 @@ export const migrations = [
     up: migration_20260419_190000_add_pathways.up,
     down: migration_20260419_190000_add_pathways.down,
     name: '20260419_190000_add_pathways',
+  },
+  {
+    up: migration_20260419_190100_add_pathway_steps.up,
+    down: migration_20260419_190100_add_pathway_steps.down,
+    name: '20260419_190100_add_pathway_steps',
   },
 ];
