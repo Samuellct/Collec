@@ -1,3 +1,20 @@
+# [0.4.0](https://github.com/Samuellct/Collec/compare/v0.3.0...v0.4.0) (2026-04-19)
+
+
+### Bug Fixes
+
+* **media-items:** fix seed script (pg direct) and regenerate importMap ([8ed1168](https://github.com/Samuellct/Collec/commit/8ed1168b8bb2d783f30e6869fc1c5aa85c484649))
+
+
+### Features
+
+* **media-items:** add ExternalIds junction collection ([47700fa](https://github.com/Samuellct/Collec/commit/47700fa9da6e649edf7b85b9466a4631d83c33c5))
+* **media-items:** add MediaItems collection with sync fields ([9bdbaf0](https://github.com/Samuellct/Collec/commit/9bdbaf0122148c1f21cbf8f0e28a19134f34350a))
+* **media-items:** add MediaTypes collection for multi-medium schema ([7c91d5e](https://github.com/Samuellct/Collec/commit/7c91d5ef2fa889488c85bfd460be37d040f115be))
+* **media-items:** add TMDB client, search, normalize and cache helpers ([fb745d6](https://github.com/Samuellct/Collec/commit/fb745d6c5eb8ff2963dfaf3dcc6138560eb2c888))
+* **media-items:** add TMDB import panel in admin beforeList ([41845d8](https://github.com/Samuellct/Collec/commit/41845d8885c5807fdab889fdc21f66b857e1f2df))
+* **media-items:** document manual override fields for ADMIN-05 ([17e360e](https://github.com/Samuellct/Collec/commit/17e360e79d11d1761104c5f0073e6ce5b664a359))
+
 # [0.3.0](https://github.com/Samuellct/Collec/compare/v0.2.0...v0.3.0) (2026-04-18)
 
 
