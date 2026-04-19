@@ -39,6 +39,7 @@ describe('normalizeMovie', () => {
     expect(result.poster_url).toBe('https://image.tmdb.org/t/p/w500/d5NXSklXo0qyIYkgV94XAgMIckC.jpg')
     expect(result.tmdb_id).toBe(438631)
     expect(result.imdb_id).toBe('tt1160419')
+    expect(result.release_date).toBe('2021-09-15')
     expect(result.source_of_truth).toBe('tmdb')
   })
 
@@ -58,6 +59,7 @@ describe('normalizeMovie', () => {
   it('handles missing release_date', () => {
     const result = normalizeMovie({ ...movieFixture, release_date: '' })
     expect(result.year).toBeNull()
+    expect(result.release_date).toBeNull()
   })
 })
 
@@ -72,6 +74,7 @@ describe('normalizeTv', () => {
     expect(result.poster_url).toBe('https://image.tmdb.org/t/p/w500/ggFHVNu6YYI5L9pCfOacjizRGt.jpg')
     expect(result.tmdb_id).toBe(1396)
     expect(result.imdb_id).toBeNull()
+    expect(result.release_date).toBe('2008-01-20')
     expect(result.source_of_truth).toBe('tmdb')
   })
 })

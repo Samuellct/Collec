@@ -65,6 +65,7 @@ export interface NormalizedMediaItem {
   title: string
   original_title: string
   year: number | null
+  release_date: string | null
   duration: number | null
   synopsis: string
   poster_url: string | null
