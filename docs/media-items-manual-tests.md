@@ -44,12 +44,113 @@ Prérequis : `docker compose up -d postgres` + `pnpm dev` démarrés. TMDB_API_K
 
 ## 7. Sécurité
 
-- [ ] En tant que customer connecté (pas admin), appeler `POST /api/media-items/import-tmdb` -> réponse 403.
-- [ ] En tant que customer, appeler `GET /api/media-items/search-tmdb?q=Dune` -> réponse 403.
-- [ ] Sans être connecté, `GET /api/media-items` -> réponse 200 (lecture publique).
+Prérequis : avoir un compte customer vérifié (créé via `/register`).
+
+### 7.1 Obtenir un token customer
+
+```powershell
+$loginCustomer = Invoke-RestMethod `
+  -Uri "http://localhost:3001/api/customers/login" `
+  -Method POST `
+  -ContentType "application/json" `
+  -Body '{"email":"ton-email@test.com","password":"ton-mot-de-passe"}'
+
+$customerToken = $loginCustomer.token
+echo $customerToken   # doit afficher un JWT non vide
+```
+
+### 7.2 Customer -> POST import-tmdb -> 403 attendu
+
+```powershell
+$r = Invoke-WebRequest `
+  -Uri "http://localhost:3001/api/media-items/import-tmdb" `
+  -Method POST `
+  -Headers @{ Authorization = "Bearer $customerToken" } `
+  -ContentType "application/json" `
+  -Body '{"tmdbId":438631,"mediaType":"movie"}' `
+  -SkipHttpErrorCheck
+
+echo $r.StatusCode          # attendu : 403
+echo $r.Content             # attendu : {"error":"Unauthorized"}
+```
+
+### 7.3 Customer -> GET search-tmdb -> 403 attendu
+
+```powershell
+$r = Invoke-WebRequest `
+  -Uri "http://localhost:3001/api/media-items/search-tmdb?q=Dune" `
+  -Headers @{ Authorization = "Bearer $customerToken" } `
+  -SkipHttpErrorCheck
+
+echo $r.StatusCode          # attendu : 403
+```
+
+### 7.4 Sans token -> GET /api/media-items -> 200 attendu (lecture publique)
+
+```powershell
+$r = Invoke-WebRequest `
+  -Uri "http://localhost:3001/api/media-items" `
+  -SkipHttpErrorCheck
+
+echo $r.StatusCode          # attendu : 200
+```
+
+---
 
 ## 8. Validation des entrées
 
-- [ ] `POST /api/media-items/import-tmdb` avec body `{}` (admin) -> réponse 400.
-- [ ] `POST /api/media-items/import-tmdb` avec `mediaType: "livre"` (admin) -> réponse 400.
-- [ ] `GET /api/media-items/search-tmdb?q=` (query vide) -> réponse `{ results: [] }` (pas d'erreur 500).
+Prérequis : token admin. Remplacer `email` et `password` par les identifiants du compte admin.
+
+### 8.0 Obtenir un token admin
+
+```powershell
+$loginAdmin = Invoke-RestMethod `
+  -Uri "http://localhost:3001/api/admins/login" `
+  -Method POST `
+  -ContentType "application/json" `
+  -Body '{"email":"admin@collec-club.fr","password":"ton-mot-de-passe-admin"}'
+
+$adminToken = $loginAdmin.token
+echo $adminToken    # doit afficher un JWT non vide
+```
+
+### 8.1 Body vide -> 400 attendu
+
+```powershell
+$r = Invoke-WebRequest `
+  -Uri "http://localhost:3001/api/media-items/import-tmdb" `
+  -Method POST `
+  -Headers @{ Authorization = "Bearer $adminToken" } `
+  -ContentType "application/json" `
+  -Body '{}' `
+  -SkipHttpErrorCheck
+
+echo $r.StatusCode          # attendu : 400
+echo $r.Content             # attendu : message d'erreur sur tmdbId/mediaType
+```
+
+### 8.2 mediaType invalide -> 400 attendu
+
+```powershell
+$r = Invoke-WebRequest `
+  -Uri "http://localhost:3001/api/media-items/import-tmdb" `
+  -Method POST `
+  -Headers @{ Authorization = "Bearer $adminToken" } `
+  -ContentType "application/json" `
+  -Body '{"tmdbId":438631,"mediaType":"livre"}' `
+  -SkipHttpErrorCheck
+
+echo $r.StatusCode          # attendu : 400
+```
+
+### 8.3 Query vide -> results vide, pas d'erreur 500
+
+```powershell
+$r = Invoke-WebRequest `
+  -Uri "http://localhost:3001/api/media-items/search-tmdb?q=" `
+  -Headers @{ Authorization = "Bearer $adminToken" } `
+  -SkipHttpErrorCheck
+
+echo $r.StatusCode                                  # attendu : 200
+($r.Content | ConvertFrom-Json).results.Count       # attendu : 0
+```
