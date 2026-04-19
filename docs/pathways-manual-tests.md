@@ -1,6 +1,6 @@
 # Tests manuels - Étape 07 : Pathways et PathwaySteps
 
-**Statut : A TESTER**
+**Statut : TOUS LES TESTS PASSENT - 19 avril 2026**
 
 Prérequis : `docker compose up -d postgres` + `pnpm dev` démarrés.
 
@@ -16,7 +16,7 @@ Vérifier que les 3 nouvelles migrations s'appliquent sans erreur :
 - `20260419_190100_add_pathway_steps`
 - `20260419_190200_add_linked_pathway_to_collections`
 
-- [ ] Les 3 migrations s'appliquent sans erreur.
+- [x] Les 3 migrations s'appliquent sans erreur.
 
 ## 1. Structure des tables
 
@@ -41,10 +41,10 @@ SELECT column_name, data_type FROM information_schema.columns
 WHERE table_name = 'collections' AND column_name = 'linked_pathway_id';
 ```
 
-- [ ] Tables `pathways` et `pathway_steps` présentes.
-- [ ] Index unique `pathway_position_idx` sur `pathway_steps`.
-- [ ] Index unique `pathway_media_item_idx` sur `pathway_steps`.
-- [ ] Colonne `linked_pathway_id` présente sur `collections`.
+- [x] Tables `pathways` et `pathway_steps` présentes.
+- [x] Index unique `pathway_position_idx` sur `pathway_steps`.
+- [x] Index unique `pathway_media_item_idx` sur `pathway_steps`.
+- [x] Colonne `linked_pathway_id` présente sur `collections`.
 
 ## 2. Obtenir un token admin
 
@@ -59,12 +59,12 @@ $adminToken = $loginAdmin.token
 echo $adminToken   # doit afficher un JWT non vide
 ```
 
-- [ ] `$adminToken` non vide.
+- [x] `$adminToken` non vide.
 
 ## 3. Création d'un parcours
 
-- [ ] Naviguer vers `/admin/collections/pathways` -> bouton "Create New".
-- [ ] Remplir :
+- [x] Naviguer vers `/admin/collections/pathways` -> bouton "Create New".
+- [x] Remplir :
   - `slug` = `nouvelle-vague-naissance-cinema`
   - `title` = "La Nouvelle Vague, naissance d'un cinéma"
   - `type` = "Chronologie historique"
@@ -72,15 +72,15 @@ echo $adminToken   # doit afficher un JWT non vide
   - `estimated_duration_hours` = 13
   - `introduction` = (coller l'introduction du doc UX, section Parcours 1)
   - `is_published` = false
-- [ ] Sauvegarder -> "Updated successfully."
+- [x] Sauvegarder -> "Updated successfully."
 
 ## 4. Ajout d'étapes via l'onglet Steps
 
-- [ ] Dans l'edit view du parcours, l'onglet "Steps" s'affiche (join field).
-- [ ] Cliquer "Create New" -> sélectionner "Dune" comme `media_item`, position = 1, ajouter `step_editorial` (150+ mots). Sauvegarder.
-- [ ] Ajouter une 2e étape : "Breaking Bad", position = 2.
-- [ ] Ajouter une 3e étape : position = 3 (un autre media_item disponible).
-- [ ] Les étapes s'affichent triées par position dans l'onglet.
+- [x] Dans l'edit view du parcours, l'onglet "Steps" s'affiche (join field).
+- [x] Cliquer "Create New" -> sélectionner "Dune" comme `media_item`, position = 1, ajouter `step_editorial` (150+ mots). Sauvegarder.
+- [x] Ajouter une 2e étape : "Breaking Bad", position = 2.
+- [x] Ajouter une 3e étape : position = 3 (un autre media_item disponible).
+- [x] Les étapes s'affichent triées par position dans l'onglet.
 
 ## 5. Test unicité position
 
@@ -103,7 +103,7 @@ try {
 [int]$r.StatusCode   # attendu : 400 ou 500 (violation index unique pathway_position_idx)
 ```
 
-- [ ] Résultat : `400` (violation de l'index unique sur (pathway, position)).
+- [x] Résultat : `400` (violation de l'index unique sur (pathway, position)).
 
 ## 6. Test unicité media_item
 
@@ -123,7 +123,7 @@ try {
 [int]$r.StatusCode   # attendu : 400 ou 500 (violation index unique pathway_media_item_idx)
 ```
 
-- [ ] Résultat : `400` (violation de l'index unique sur (pathway, media_item)).
+- [x] Résultat : `400` (violation de l'index unique sur (pathway, media_item)).
 
 ## 7. Lecture publique conditionnelle
 
@@ -139,11 +139,11 @@ echo $r.StatusCode                          # attendu : 200
 ($r.Content | ConvertFrom-Json).totalDocs   # attendu : 0
 ```
 
-- [ ] Résultat : `200`, `totalDocs = 0` (parcours non publié invisible au public).
+- [x] Résultat : `200`, `totalDocs = 0` (parcours non publié invisible au public).
 
 ### 7.2 Publier le parcours
 
-- [ ] Dans l'edit view, cocher `is_published = true`, sauvegarder.
+- [x] Dans l'edit view, cocher `is_published = true`, sauvegarder.
 
 ### 7.3 Parcours publié -> visible publiquement
 
@@ -155,7 +155,7 @@ echo $r.StatusCode                          # attendu : 200
 ($r.Content | ConvertFrom-Json).totalDocs   # attendu : 1
 ```
 
-- [ ] Résultat : `200`, `totalDocs = 1`.
+- [x] Résultat : `200`, `totalDocs = 1`.
 
 ### 7.4 Admin voit tout (publié ou non)
 
@@ -170,15 +170,15 @@ echo $r.StatusCode                          # attendu : 200
 ($r.Content | ConvertFrom-Json).totalDocs   # attendu : 1
 ```
 
-- [ ] Résultat : `totalDocs = 1` même avec `is_published = false`.
+- [x] Résultat : `totalDocs = 1` même avec `is_published = false`.
 
 ## 8. Lien bidirectionnel Collections <-> Pathways
 
-- [ ] Republier le parcours (cocher `is_published = true`, sauvegarder).
-- [ ] Naviguer vers la collection "filmographie-denis-villeneuve" dans `/admin/collections/collections`.
-- [ ] Dans le champ `linked_pathway`, sélectionner "La Nouvelle Vague, naissance d'un cinéma".
-- [ ] Sauvegarder -> "Updated successfully."
-- [ ] Via GET admin, vérifier que `linked_pathway_id` est non nul :
+- [x] Republier le parcours (cocher `is_published = true`, sauvegarder).
+- [x] Naviguer vers la collection "filmographie-denis-villeneuve" dans `/admin/collections/collections`.
+- [x] Dans le champ `linked_pathway`, sélectionner "La Nouvelle Vague, naissance d'un cinéma".
+- [x] Sauvegarder -> "Updated successfully."
+- [x] Via GET admin, vérifier que `linked_pathway_id` est non nul :
 
 ```powershell
 $collectionSlug = "filmographie-denis-villeneuve"
@@ -191,7 +191,7 @@ $doc = ($r.Content | ConvertFrom-Json).docs[0]
 $doc.linked_pathway   # attendu : id non nul du parcours lié
 ```
 
-- [ ] `linked_pathway` non nul.
+- [x] `linked_pathway` non nul.
 
 ## 9. Sécurité : customer ne peut pas créer un parcours
 
@@ -211,4 +211,4 @@ try {
 [int]$r.StatusCode   # attendu : 403
 ```
 
-- [ ] Résultat : 403.
+- [x] Résultat : 403.
