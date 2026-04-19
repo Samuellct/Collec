@@ -21,7 +21,7 @@ Vérifier que les 3 nouvelles migrations s'appliquent sans erreur :
 ## 1. Structure des tables
 
 ```powershell
-docker exec -it 03_developpement-postgres-1 psql -U payload -d collec_club
+docker exec -it 03_developpement-postgres-1 psql -U collec -d collec_club
 ```
 
 ```sql
