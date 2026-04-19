@@ -44,6 +44,13 @@ export const MediaItems: CollectionConfig = {
       type: 'number',
     },
     {
+      name: 'release_date',
+      type: 'date',
+      admin: {
+        description: 'Date de sortie (AAAA-MM-JJ). Utilisée pour le tri chronologique dans les collections.',
+      },
+    },
+    {
       name: 'duration',
       type: 'number',
       admin: {
