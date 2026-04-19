@@ -73,18 +73,26 @@ export interface Config {
     'media-types': MediaType;
     'media-items': MediaItem;
     'external-ids': ExternalId;
+    collections: Collection;
+    'collection-items': CollectionItem;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    collections: {
+      items: 'collection-items';
+    };
+  };
   collectionsSelect: {
     admins: AdminsSelect<false> | AdminsSelect<true>;
     customers: CustomersSelect<false> | CustomersSelect<true>;
     'media-types': MediaTypesSelect<false> | MediaTypesSelect<true>;
     'media-items': MediaItemsSelect<false> | MediaItemsSelect<true>;
     'external-ids': ExternalIdsSelect<false> | ExternalIdsSelect<true>;
+    collections: CollectionsSelect<false> | CollectionsSelect<true>;
+    'collection-items': CollectionItemsSelect<false> | CollectionItemsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -225,6 +233,10 @@ export interface MediaItem {
   original_title?: string | null;
   year?: number | null;
   /**
+   * Date de sortie (AAAA-MM-JJ). Utilisée pour le tri chronologique dans les collections.
+   */
+  release_date?: string | null;
+  /**
    * Minutes pour les films, nombre de saisons pour les séries.
    */
   duration?: number | null;
@@ -254,6 +266,76 @@ export interface ExternalId {
   media_item: number | MediaItem;
   provider: 'tmdb' | 'imdb';
   external_id: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "collections".
+ */
+export interface Collection {
+  id: number;
+  /**
+   * Identifiant URL unique, format kebab-case (ex: filmographie-villeneuve).
+   */
+  slug: string;
+  title: string;
+  /**
+   * Courte description affichée dans le listing. 140 caractères maximum.
+   */
+  short_description: string;
+  /**
+   * Note éditoriale longue. Recommandée pour les collections non factuelles (mouvements, thématiques).
+   */
+  editorial_note?: string | null;
+  type:
+    | 'filmography_complete'
+    | 'filmography_studio'
+    | 'saga'
+    | 'franchise'
+    | 'movement'
+    | 'subgenre'
+    | 'prize_complete'
+    | 'prize_edition'
+    | 'national_cinema'
+    | 'thematic';
+  /**
+   * Niveau requis pour apprécier la collection.
+   */
+  accessibility_level: 'accessible' | 'curieux' | 'cinephile';
+  /**
+   * URL absolue de l'image de couverture.
+   */
+  cover_image_url?: string | null;
+  /**
+   * Collection ouverte (ajout continu d'oeuvres) vs fermée (figée).
+   */
+  is_open?: boolean | null;
+  /**
+   * Rendre la collection visible sur le site public.
+   */
+  is_published?: boolean | null;
+  display_order?: number | null;
+  items?: {
+    docs?: (number | CollectionItem)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "collection-items".
+ */
+export interface CollectionItem {
+  id: number;
+  collection: number | Collection;
+  media_item: number | MediaItem;
+  /**
+   * Note éditoriale sur l'oeuvre dans cette collection.
+   */
+  item_note?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -300,6 +382,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'external-ids';
         value: number | ExternalId;
+      } | null)
+    | ({
+        relationTo: 'collections';
+        value: number | Collection;
+      } | null)
+    | ({
+        relationTo: 'collection-items';
+        value: number | CollectionItem;
       } | null);
   globalSlug?: string | null;
   user:
@@ -418,6 +508,7 @@ export interface MediaItemsSelect<T extends boolean = true> {
   title?: T;
   original_title?: T;
   year?: T;
+  release_date?: T;
   duration?: T;
   synopsis?: T;
   poster_url?: T;
@@ -438,6 +529,36 @@ export interface ExternalIdsSelect<T extends boolean = true> {
   media_item?: T;
   provider?: T;
   external_id?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "collections_select".
+ */
+export interface CollectionsSelect<T extends boolean = true> {
+  slug?: T;
+  title?: T;
+  short_description?: T;
+  editorial_note?: T;
+  type?: T;
+  accessibility_level?: T;
+  cover_image_url?: T;
+  is_open?: T;
+  is_published?: T;
+  display_order?: T;
+  items?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "collection-items_select".
+ */
+export interface CollectionItemsSelect<T extends boolean = true> {
+  collection?: T;
+  media_item?: T;
+  item_note?: T;
   updatedAt?: T;
   createdAt?: T;
 }
