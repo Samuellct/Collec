@@ -75,6 +75,8 @@ export interface Config {
     'external-ids': ExternalId;
     collections: Collection;
     'collection-items': CollectionItem;
+    pathways: Pathway;
+    'pathway-steps': PathwayStep;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -83,6 +85,9 @@ export interface Config {
   collectionsJoins: {
     collections: {
       items: 'collection-items';
+    };
+    pathways: {
+      steps: 'pathway-steps';
     };
   };
   collectionsSelect: {
@@ -93,6 +98,8 @@ export interface Config {
     'external-ids': ExternalIdsSelect<false> | ExternalIdsSelect<true>;
     collections: CollectionsSelect<false> | CollectionsSelect<true>;
     'collection-items': CollectionItemsSelect<false> | CollectionItemsSelect<true>;
+    pathways: PathwaysSelect<false> | PathwaysSelect<true>;
+    'pathway-steps': PathwayStepsSelect<false> | PathwayStepsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -315,12 +322,88 @@ export interface Collection {
    * Rendre la collection visible sur le site public.
    */
   is_published?: boolean | null;
+  /**
+   * Parcours directement lié à cette collection.
+   */
+  linked_pathway?: (number | null) | Pathway;
   display_order?: number | null;
   items?: {
     docs?: (number | CollectionItem)[];
     hasNextPage?: boolean;
     totalDocs?: number;
   };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pathways".
+ */
+export interface Pathway {
+  id: number;
+  /**
+   * Identifiant URL unique, format kebab-case (ex: nouvelle-vague-naissance-cinema).
+   */
+  slug: string;
+  title: string;
+  /**
+   * Précise l'angle sans répéter le titre.
+   */
+  subtitle?: string | null;
+  /**
+   * 200 à 500 mots. Angle éditorial et promesse d'expérience.
+   */
+  introduction: string;
+  type: 'historical' | 'author' | 'thematic' | 'national' | 'genre' | 'blockbuster';
+  /**
+   * Niveau requis pour apprécier le parcours.
+   */
+  accessibility_level: 'accessible' | 'curieux' | 'cinephile';
+  /**
+   * Durée de visionnage totale estimée, en heures.
+   */
+  estimated_duration_hours?: number | null;
+  /**
+   * Collection directement liée à ce parcours.
+   */
+  linked_collection?: (number | null) | Collection;
+  /**
+   * Rendre le parcours visible sur le site public.
+   */
+  is_published?: boolean | null;
+  display_order?: number | null;
+  steps?: {
+    docs?: (number | PathwayStep)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pathway-steps".
+ */
+export interface PathwayStep {
+  id: number;
+  pathway: number | Pathway;
+  media_item: number | MediaItem;
+  /**
+   * Ordre de l'étape dans le parcours. Commence à 1. Fixe.
+   */
+  position: number;
+  /**
+   * Titre éditorial de l'étape (ex : "L'étincelle" plutôt que le titre du film).
+   */
+  step_title?: string | null;
+  /**
+   * 150 à 300 mots. Contexte, apport de l'oeuvre dans le parcours, ouverture sur la suite.
+   */
+  step_editorial: string;
+  /**
+   * Note factuelle optionnelle. 50 mots maximum.
+   */
+  step_context?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -390,6 +473,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'collection-items';
         value: number | CollectionItem;
+      } | null)
+    | ({
+        relationTo: 'pathways';
+        value: number | Pathway;
+      } | null)
+    | ({
+        relationTo: 'pathway-steps';
+        value: number | PathwayStep;
       } | null);
   globalSlug?: string | null;
   user:
@@ -546,6 +637,7 @@ export interface CollectionsSelect<T extends boolean = true> {
   cover_image_url?: T;
   is_open?: T;
   is_published?: T;
+  linked_pathway?: T;
   display_order?: T;
   items?: T;
   updatedAt?: T;
@@ -559,6 +651,39 @@ export interface CollectionItemsSelect<T extends boolean = true> {
   collection?: T;
   media_item?: T;
   item_note?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pathways_select".
+ */
+export interface PathwaysSelect<T extends boolean = true> {
+  slug?: T;
+  title?: T;
+  subtitle?: T;
+  introduction?: T;
+  type?: T;
+  accessibility_level?: T;
+  estimated_duration_hours?: T;
+  linked_collection?: T;
+  is_published?: T;
+  display_order?: T;
+  steps?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pathway-steps_select".
+ */
+export interface PathwayStepsSelect<T extends boolean = true> {
+  pathway?: T;
+  media_item?: T;
+  position?: T;
+  step_title?: T;
+  step_editorial?: T;
+  step_context?: T;
   updatedAt?: T;
   createdAt?: T;
 }

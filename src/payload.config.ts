@@ -11,6 +11,8 @@ import { MediaItems } from './modules/media-items/collections/MediaItems.ts'
 import { ExternalIds } from './modules/media-items/collections/ExternalIds.ts'
 import { Collections } from './modules/collections/collections/Collections.ts'
 import { CollectionItems } from './modules/collections/collections/CollectionItems.ts'
+import { Pathways } from './modules/pathways/collections/Pathways.ts'
+import { PathwaySteps } from './modules/pathways/collections/PathwaySteps.ts'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -36,7 +38,7 @@ export default buildConfig({
     push: false,
     migrationDir: path.resolve(dirname, '../migrations'),
   }),
-  collections: [Admins, Customers, MediaTypes, MediaItems, ExternalIds, Collections, CollectionItems],
+  collections: [Admins, Customers, MediaTypes, MediaItems, ExternalIds, Collections, CollectionItems, Pathways, PathwaySteps],
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },

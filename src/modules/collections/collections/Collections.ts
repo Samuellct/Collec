@@ -92,6 +92,15 @@ export const Collections: CollectionConfig = {
       },
     },
     {
+      name: 'linked_pathway',
+      type: 'relationship',
+      relationTo: 'pathways',
+      hasMany: false,
+      admin: {
+        description: 'Parcours directement lié à cette collection.',
+      },
+    },
+    {
       name: 'display_order',
       type: 'number',
       defaultValue: 0,
