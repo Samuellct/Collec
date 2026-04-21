@@ -1,3 +1,12 @@
+# [0.6.0](https://github.com/Samuellct/Collec/compare/v0.5.0...v0.6.0) (2026-04-21)
+
+
+### Features
+
+* **collections:** add linked_pathway relationship to Collections ([61d7f9e](https://github.com/Samuellct/Collec/commit/61d7f9eba193ece8def82e4b50ad169cc140586a))
+* **pathways:** add Pathways collection with editorial fields ([87c480b](https://github.com/Samuellct/Collec/commit/87c480bce495192b441879fb637b44996bb9296d))
+* **pathways:** add PathwaySteps junction and join field on Pathways ([40e4d4c](https://github.com/Samuellct/Collec/commit/40e4d4c33f6e221e5c2e9281cc769461335fe08c))
+
 # [0.5.0](https://github.com/Samuellct/Collec/compare/v0.4.0...v0.5.0) (2026-04-19)
 
 
