@@ -18,7 +18,7 @@ describe('recalculateForUserAndMedia', () => {
 
   it('creates UserCollectionProgress when media is in one collection and not yet tracked', async () => {
     const payload = makePayload()
-    payload.find.mockImplementation(async ({ collection, where }: { collection: string; where: Record<string, unknown> }) => {
+    payload.find.mockImplementation(async ({ collection, where }: { collection: string; where: Record<string, Record<string, unknown>> }) => {
       if (collection === 'user-watched-items') {
         return { docs: [{ media_item: mediaItemId }], totalDocs: 1 }
       }
@@ -56,7 +56,7 @@ describe('recalculateForUserAndMedia', () => {
 
   it('updates existing UserCollectionProgress on re-mark (no completion change)', async () => {
     const payload = makePayload()
-    payload.find.mockImplementation(async ({ collection, where }: { collection: string; where: Record<string, unknown> }) => {
+    payload.find.mockImplementation(async ({ collection, where }: { collection: string; where: Record<string, Record<string, unknown>> }) => {
       if (collection === 'user-watched-items') {
         return { docs: [{ media_item: mediaItemId }], totalDocs: 1 }
       }
@@ -94,7 +94,7 @@ describe('recalculateForUserAndMedia', () => {
 
   it('sets is_completed and completed_at when all items are watched', async () => {
     const payload = makePayload()
-    payload.find.mockImplementation(async ({ collection, where }: { collection: string; where: Record<string, unknown> }) => {
+    payload.find.mockImplementation(async ({ collection, where }: { collection: string; where: Record<string, Record<string, unknown>> }) => {
       if (collection === 'user-watched-items') {
         return { docs: [{ media_item: 10 }, { media_item: 20 }], totalDocs: 2 }
       }
@@ -122,7 +122,7 @@ describe('recalculateForUserAndMedia', () => {
 
   it('resets is_completed and completed_at when a watched item is removed', async () => {
     const payload = makePayload()
-    payload.find.mockImplementation(async ({ collection, where }: { collection: string; where: Record<string, unknown> }) => {
+    payload.find.mockImplementation(async ({ collection, where }: { collection: string; where: Record<string, Record<string, unknown>> }) => {
       if (collection === 'user-watched-items') {
         return { docs: [], totalDocs: 0 }
       }
@@ -151,7 +151,7 @@ describe('recalculateForUserAndMedia', () => {
 
   it('returns 0% without dividing by zero when collection is empty', async () => {
     const payload = makePayload()
-    payload.find.mockImplementation(async ({ collection, where }: { collection: string; where: Record<string, unknown> }) => {
+    payload.find.mockImplementation(async ({ collection, where }: { collection: string; where: Record<string, Record<string, unknown>> }) => {
       if (collection === 'user-watched-items') {
         return { docs: [{ media_item: mediaItemId }], totalDocs: 1 }
       }
@@ -194,7 +194,7 @@ describe('recalculateForUserAndMedia', () => {
 
   it('updates all collections that contain the media', async () => {
     const payload = makePayload()
-    payload.find.mockImplementation(async ({ collection, where }: { collection: string; where: Record<string, unknown> }) => {
+    payload.find.mockImplementation(async ({ collection, where }: { collection: string; where: Record<string, Record<string, unknown>> }) => {
       if (collection === 'user-watched-items') {
         return { docs: [{ media_item: mediaItemId }], totalDocs: 1 }
       }
@@ -222,14 +222,15 @@ describe('recalculateForUserAndMedia', () => {
     await recalculateForUserAndMedia(payload as never, userId, mediaItemId)
 
     expect(payload.create).toHaveBeenCalledTimes(2)
-    const collections = payload.create.mock.calls.map((c: [{ data: { collection: number } }]) => c[0].data.collection)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const collections = payload.create.mock.calls.map((c: any) => c[0].data.collection)
     expect(collections).toContain(42)
     expect(collections).toContain(43)
   })
 
   it('updates UserPathwayProgress when media is in a pathway', async () => {
     const payload = makePayload()
-    payload.find.mockImplementation(async ({ collection, where }: { collection: string; where: Record<string, unknown> }) => {
+    payload.find.mockImplementation(async ({ collection, where }: { collection: string; where: Record<string, Record<string, unknown>> }) => {
       if (collection === 'user-watched-items') {
         return { docs: [{ media_item: mediaItemId }], totalDocs: 1 }
       }
