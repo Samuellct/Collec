@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { isOwnProgress } from '../access/is-own-progress.ts'
+import { afterWatchChange, afterWatchDelete } from '../hooks/recalculate-on-watch-change.ts'
 
 export const UserWatchedItems: CollectionConfig = {
   slug: 'user-watched-items',
@@ -31,6 +32,8 @@ export const UserWatchedItems: CollectionConfig = {
         return data
       },
     ],
+    afterChange: [afterWatchChange],
+    afterDelete: [afterWatchDelete],
   },
   fields: [
     {
