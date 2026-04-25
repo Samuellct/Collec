@@ -8,7 +8,7 @@ export const afterWatchChange: CollectionAfterChangeHook<UserWatchedItem> = asyn
 }) => {
   const userId = typeof doc.user === 'object' ? doc.user.id : doc.user
   const mediaItemId = typeof doc.media_item === 'object' ? doc.media_item.id : doc.media_item
-  await recalculateForUserAndMedia(req.payload, userId, mediaItemId)
+  await recalculateForUserAndMedia(req, userId, mediaItemId)
   return doc
 }
 
@@ -18,5 +18,5 @@ export const afterWatchDelete: CollectionAfterDeleteHook<UserWatchedItem> = asyn
 }) => {
   const userId = typeof doc.user === 'object' ? doc.user.id : doc.user
   const mediaItemId = typeof doc.media_item === 'object' ? doc.media_item.id : doc.media_item
-  await recalculateForUserAndMedia(req.payload, userId, mediaItemId)
+  await recalculateForUserAndMedia(req, userId, mediaItemId)
 }

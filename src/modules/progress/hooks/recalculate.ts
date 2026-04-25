@@ -1,15 +1,16 @@
-import type { Payload } from 'payload'
+import type { PayloadRequest } from 'payload'
 
 export async function recalculateForUserAndMedia(
-  payload: Payload,
+  req: PayloadRequest,
   userId: number,
   mediaItemId: number,
 ): Promise<void> {
-  const watchedResult = await payload.find({
+  const watchedResult = await req.payload.find({
     collection: 'user-watched-items',
     where: { user: { equals: userId } },
     limit: 0,
     depth: 0,
+    req,
   })
   const watchedIds = new Set(
     watchedResult.docs.map((doc) => {
@@ -18,21 +19,22 @@ export async function recalculateForUserAndMedia(
     }),
   )
 
-  await recalculateCollections(payload, userId, mediaItemId, watchedIds)
-  await recalculatePathways(payload, userId, mediaItemId, watchedIds)
+  await recalculateCollections(req, userId, mediaItemId, watchedIds)
+  await recalculatePathways(req, userId, mediaItemId, watchedIds)
 }
 
 async function recalculateCollections(
-  payload: Payload,
+  req: PayloadRequest,
   userId: number,
   mediaItemId: number,
   watchedIds: Set<number>,
 ): Promise<void> {
-  const linkResult = await payload.find({
+  const linkResult = await req.payload.find({
     collection: 'collection-items',
     where: { media_item: { equals: mediaItemId } },
     limit: 0,
     depth: 0,
+    req,
   })
 
   const collectionIds = [
@@ -45,11 +47,12 @@ async function recalculateCollections(
   ]
 
   for (const collectionId of collectionIds) {
-    const allItemsResult = await payload.find({
+    const allItemsResult = await req.payload.find({
       collection: 'collection-items',
       where: { collection: { equals: collectionId } },
       limit: 0,
       depth: 0,
+      req,
     })
 
     const itemsTotal = allItemsResult.totalDocs
@@ -62,13 +65,14 @@ async function recalculateCollections(
     const percentage = itemsTotal > 0 ? Math.round((itemsSeen / itemsTotal) * 100) : 0
     const isCompleted = percentage === 100
 
-    const existing = await payload.find({
+    const existing = await req.payload.find({
       collection: 'user-collection-progress',
       where: {
         and: [{ user: { equals: userId } }, { collection: { equals: collectionId } }],
       },
       limit: 1,
       depth: 0,
+      req,
     })
 
     if (existing.docs.length > 0) {
@@ -81,7 +85,7 @@ async function recalculateCollections(
             ? (prev.completed_at as string | null)
             : null
 
-      await payload.update({
+      await req.payload.update({
         collection: 'user-collection-progress',
         id: prev.id,
         data: {
@@ -91,9 +95,10 @@ async function recalculateCollections(
           is_completed: isCompleted,
           completed_at: completedAt,
         },
+        req,
       })
     } else {
-      await payload.create({
+      await req.payload.create({
         collection: 'user-collection-progress',
         data: {
           user: userId,
@@ -104,22 +109,24 @@ async function recalculateCollections(
           is_completed: isCompleted,
           completed_at: isCompleted ? new Date().toISOString() : null,
         },
+        req,
       })
     }
   }
 }
 
 async function recalculatePathways(
-  payload: Payload,
+  req: PayloadRequest,
   userId: number,
   mediaItemId: number,
   watchedIds: Set<number>,
 ): Promise<void> {
-  const linkResult = await payload.find({
+  const linkResult = await req.payload.find({
     collection: 'pathway-steps',
     where: { media_item: { equals: mediaItemId } },
     limit: 0,
     depth: 0,
+    req,
   })
 
   const pathwayIds = [
@@ -132,11 +139,12 @@ async function recalculatePathways(
   ]
 
   for (const pathwayId of pathwayIds) {
-    const allStepsResult = await payload.find({
+    const allStepsResult = await req.payload.find({
       collection: 'pathway-steps',
       where: { pathway: { equals: pathwayId } },
       limit: 0,
       depth: 0,
+      req,
     })
 
     const stepsTotal = allStepsResult.totalDocs
@@ -149,13 +157,14 @@ async function recalculatePathways(
     const percentage = stepsTotal > 0 ? Math.round((stepsCompleted / stepsTotal) * 100) : 0
     const isCompleted = percentage === 100
 
-    const existing = await payload.find({
+    const existing = await req.payload.find({
       collection: 'user-pathway-progress',
       where: {
         and: [{ user: { equals: userId } }, { pathway: { equals: pathwayId } }],
       },
       limit: 1,
       depth: 0,
+      req,
     })
 
     if (existing.docs.length > 0) {
@@ -168,7 +177,7 @@ async function recalculatePathways(
             ? (prev.completed_at as string | null)
             : null
 
-      await payload.update({
+      await req.payload.update({
         collection: 'user-pathway-progress',
         id: prev.id,
         data: {
@@ -178,9 +187,10 @@ async function recalculatePathways(
           is_completed: isCompleted,
           completed_at: completedAt,
         },
+        req,
       })
     } else {
-      await payload.create({
+      await req.payload.create({
         collection: 'user-pathway-progress',
         data: {
           user: userId,
@@ -191,6 +201,7 @@ async function recalculatePathways(
           is_completed: isCompleted,
           completed_at: isCompleted ? new Date().toISOString() : null,
         },
+        req,
       })
     }
   }
