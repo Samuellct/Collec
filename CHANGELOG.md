@@ -1,3 +1,20 @@
+# [0.7.0](https://github.com/Samuellct/Collec/compare/v0.6.0...v0.7.0) (2026-04-25)
+
+
+### Bug Fixes
+
+* **progress:** correct test type annotations for where parameter ([d9e3259](https://github.com/Samuellct/Collec/commit/d9e3259bbd9e0ce8ea3ea05072eca7d95218c5f7))
+
+
+### Features
+
+* **progress:** add next-unwatched helpers for collections and pathways ([ed165a1](https://github.com/Samuellct/Collec/commit/ed165a1864dcd4c373b085303531d9755c2d4dc4))
+* **progress:** add recalculate helper for collections and pathways ([f7fa910](https://github.com/Samuellct/Collec/commit/f7fa91011882ee40fdad9198a01b8826a95350d0))
+* **progress:** add user-collection-progress collection ([6f10060](https://github.com/Samuellct/Collec/commit/6f100604dc740105952fbc97c9fee62660f59aaf))
+* **progress:** add user-pathway-progress collection ([a31d3af](https://github.com/Samuellct/Collec/commit/a31d3af512554079a7cac11f7aa36bfb9614792b))
+* **progress:** add user-watched-items collection with access control and migration ([c0908a4](https://github.com/Samuellct/Collec/commit/c0908a46dab85c0290808251afa26a2798627226))
+* **progress:** wire afterChange and afterDelete hooks on user-watched-items ([6037cf8](https://github.com/Samuellct/Collec/commit/6037cf88d4d492a38674731942886955ebc1b72e))
+
 # [0.6.0](https://github.com/Samuellct/Collec/compare/v0.5.0...v0.6.0) (2026-04-21)
 
 
