@@ -1,3 +1,10 @@
+## [0.7.1](https://github.com/Samuellct/Collec/compare/v0.7.0...v0.7.1) (2026-04-25)
+
+
+### Bug Fixes
+
+* **progress:** pass req through recalculate to fix transaction isolation ([564c65a](https://github.com/Samuellct/Collec/commit/564c65a14fe49e327225aee3e3fd63500588af4c))
+
 # [0.7.0](https://github.com/Samuellct/Collec/compare/v0.6.0...v0.7.0) (2026-04-25)
 
 
