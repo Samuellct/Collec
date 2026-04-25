@@ -77,6 +77,9 @@ export interface Config {
     'collection-items': CollectionItem;
     pathways: Pathway;
     'pathway-steps': PathwayStep;
+    'user-watched-items': UserWatchedItem;
+    'user-collection-progress': UserCollectionProgress;
+    'user-pathway-progress': UserPathwayProgress;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -100,6 +103,9 @@ export interface Config {
     'collection-items': CollectionItemsSelect<false> | CollectionItemsSelect<true>;
     pathways: PathwaysSelect<false> | PathwaysSelect<true>;
     'pathway-steps': PathwayStepsSelect<false> | PathwayStepsSelect<true>;
+    'user-watched-items': UserWatchedItemsSelect<false> | UserWatchedItemsSelect<true>;
+    'user-collection-progress': UserCollectionProgressSelect<false> | UserCollectionProgressSelect<true>;
+    'user-pathway-progress': UserPathwayProgressSelect<false> | UserPathwayProgressSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -424,6 +430,53 @@ export interface CollectionItem {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "user-watched-items".
+ */
+export interface UserWatchedItem {
+  id: number;
+  user: number | Customer;
+  media_item: number | MediaItem;
+  /**
+   * Date de visionnage saisie par l'utilisateur.
+   */
+  watched_at: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "user-collection-progress".
+ */
+export interface UserCollectionProgress {
+  id: number;
+  user: number | Customer;
+  collection: number | Collection;
+  items_seen: number;
+  items_total: number;
+  percentage: number;
+  is_completed: boolean;
+  completed_at?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "user-pathway-progress".
+ */
+export interface UserPathwayProgress {
+  id: number;
+  user: number | Customer;
+  pathway: number | Pathway;
+  steps_completed: number;
+  steps_total: number;
+  percentage: number;
+  is_completed: boolean;
+  completed_at?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -481,6 +534,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'pathway-steps';
         value: number | PathwayStep;
+      } | null)
+    | ({
+        relationTo: 'user-watched-items';
+        value: number | UserWatchedItem;
+      } | null)
+    | ({
+        relationTo: 'user-collection-progress';
+        value: number | UserCollectionProgress;
+      } | null)
+    | ({
+        relationTo: 'user-pathway-progress';
+        value: number | UserPathwayProgress;
       } | null);
   globalSlug?: string | null;
   user:
@@ -684,6 +749,47 @@ export interface PathwayStepsSelect<T extends boolean = true> {
   step_title?: T;
   step_editorial?: T;
   step_context?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "user-watched-items_select".
+ */
+export interface UserWatchedItemsSelect<T extends boolean = true> {
+  user?: T;
+  media_item?: T;
+  watched_at?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "user-collection-progress_select".
+ */
+export interface UserCollectionProgressSelect<T extends boolean = true> {
+  user?: T;
+  collection?: T;
+  items_seen?: T;
+  items_total?: T;
+  percentage?: T;
+  is_completed?: T;
+  completed_at?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "user-pathway-progress_select".
+ */
+export interface UserPathwayProgressSelect<T extends boolean = true> {
+  user?: T;
+  pathway?: T;
+  steps_completed?: T;
+  steps_total?: T;
+  percentage?: T;
+  is_completed?: T;
+  completed_at?: T;
   updatedAt?: T;
   createdAt?: T;
 }

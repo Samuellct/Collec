@@ -6,9 +6,7 @@ import * as migration_20260419_100812_add_external_ids from './20260419_100812_a
 import * as migration_20260419_165648_add_release_date_to_media_items from './20260419_165648_add_release_date_to_media_items';
 import * as migration_20260419_180857_add_collections from './20260419_180857_add_collections';
 import * as migration_20260419_180940_add_collection_items from './20260419_180940_add_collection_items';
-import * as migration_20260419_190000_add_pathways from './20260419_190000_add_pathways';
-import * as migration_20260419_190100_add_pathway_steps from './20260419_190100_add_pathway_steps';
-import * as migration_20260419_190200_add_linked_pathway_to_collections from './20260419_190200_add_linked_pathway_to_collections';
+import * as migration_20260424_100601_add_pathways_and_progression from './20260424_100601_add_pathways_and_progression';
 
 export const migrations = [
   {
@@ -52,18 +50,8 @@ export const migrations = [
     name: '20260419_180940_add_collection_items',
   },
   {
-    up: migration_20260419_190000_add_pathways.up,
-    down: migration_20260419_190000_add_pathways.down,
-    name: '20260419_190000_add_pathways',
-  },
-  {
-    up: migration_20260419_190100_add_pathway_steps.up,
-    down: migration_20260419_190100_add_pathway_steps.down,
-    name: '20260419_190100_add_pathway_steps',
-  },
-  {
-    up: migration_20260419_190200_add_linked_pathway_to_collections.up,
-    down: migration_20260419_190200_add_linked_pathway_to_collections.down,
-    name: '20260419_190200_add_linked_pathway_to_collections',
+    up: migration_20260424_100601_add_pathways_and_progression.up,
+    down: migration_20260424_100601_add_pathways_and_progression.down,
+    name: '20260424_100601_add_pathways_and_progression',
   },
 ];
