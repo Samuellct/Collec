@@ -194,11 +194,17 @@ export interface Admin {
  */
 export interface Customer {
   id: number;
+  /**
+   * Identifiant public unique, 3 à 30 caractères.
+   */
+  pseudo: string;
+  /**
+   * Désactiver ce compte pour empêcher la connexion.
+   */
+  disabled?: boolean | null;
   updatedAt: string;
   createdAt: string;
   email: string;
-  pseudo: string;
-  disabled?: boolean | null;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
   salt?: string | null;
@@ -628,6 +634,8 @@ export interface AdminsSelect<T extends boolean = true> {
  * via the `definition` "customers_select".
  */
 export interface CustomersSelect<T extends boolean = true> {
+  pseudo?: T;
+  disabled?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

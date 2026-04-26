@@ -2,6 +2,10 @@
 
 Prerequis : `docker compose up postgres -d` + `pnpm payload migrate` + `pnpm dev` en cours.
 
+> **PowerShell 5.1** : le JSON doit utiliser `\"` a l'interieur d'une single-quoted string.
+> Ex : `$body = '{\"email\":\"...\"}'`. Le parseur d'arguments Windows convertit `\"` en `"` avant de
+> passer la chaine a `curl.exe`. Les doubles guillemets nus dans une single-quoted string sont manges.
+
 ---
 
 ## 0. Migrations
@@ -22,10 +26,9 @@ Attendu : les deux nouvelles migrations apparaissent comme appliquees :
 
 ### 1.1 Inscription valide
 
-```bash
-curl -X POST http://localhost:3001/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"email":"alice@example.com","password":"securepass","pseudo":"alice42","turnstileToken":"1x00000000000000000000BB"}'
+```powershell
+$body = '{\"email\":\"alice@example.com\",\"password\":\"securepass\",\"pseudo\":\"alice42\",\"turnstileToken\":\"1x00000000000000000000BB\"}'
+curl.exe -X POST http://localhost:3001/api/auth/register -H "Content-Type: application/json" -d $body
 ```
 
 Attendu : HTTP 201. Verifier dans le panneau admin (`/admin` > Utilisateurs > Customers) que :
@@ -35,30 +38,27 @@ Attendu : HTTP 201. Verifier dans le panneau admin (`/admin` > Utilisateurs > Cu
 
 ### 1.2 Pseudo deja utilise
 
-```bash
-curl -X POST http://localhost:3001/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"email":"bob@example.com","password":"securepass","pseudo":"alice42","turnstileToken":"1x00000000000000000000BB"}'
+```powershell
+$body = '{\"email\":\"bob@example.com\",\"password\":\"securepass\",\"pseudo\":\"alice42\",\"turnstileToken\":\"1x00000000000000000000BB\"}'
+curl.exe -X POST http://localhost:3001/api/auth/register -H "Content-Type: application/json" -d $body
 ```
 
 Attendu : HTTP 409.
 
 ### 1.3 Pseudo trop court (< 3 chars)
 
-```bash
-curl -X POST http://localhost:3001/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"email":"bob@example.com","password":"securepass","pseudo":"ab","turnstileToken":"1x00000000000000000000BB"}'
+```powershell
+$body = '{\"email\":\"bob@example.com\",\"password\":\"securepass\",\"pseudo\":\"ab\",\"turnstileToken\":\"1x00000000000000000000BB\"}'
+curl.exe -X POST http://localhost:3001/api/auth/register -H "Content-Type: application/json" -d $body
 ```
 
 Attendu : HTTP 400.
 
 ### 1.4 Pseudo absent
 
-```bash
-curl -X POST http://localhost:3001/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"email":"bob@example.com","password":"securepass","turnstileToken":"1x00000000000000000000BB"}'
+```powershell
+$body = '{\"email\":\"bob@example.com\",\"password\":\"securepass\",\"turnstileToken\":\"1x00000000000000000000BB\"}'
+curl.exe -X POST http://localhost:3001/api/auth/register -H "Content-Type: application/json" -d $body
 ```
 
 Attendu : HTTP 400.
@@ -92,10 +92,9 @@ Attendu : HTTP 400.
 
 ### 3.2 Tenter de se connecter avec le compte desactive
 
-```bash
-curl -X POST http://localhost:3001/api/customers/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"alice@example.com","password":"securepass"}'
+```powershell
+$body = '{\"email\":\"alice@example.com\",\"password\":\"securepass\"}'
+curl.exe -X POST http://localhost:3001/api/customers/login -H "Content-Type: application/json" -d $body
 ```
 
 Attendu : HTTP 401, message "Ce compte est desactive."
@@ -125,12 +124,11 @@ Attendu : HTTP 401, message "Ce compte est desactive."
 
 ### 4.3 Via curl (verifie auth admin)
 
-```bash
+```powershell
 # Recuperer le token admin en se connectant d'abord :
 # Utiliser le cookie payload-token obtenu apres connexion a /admin
 
-curl -X POST http://localhost:3001/api/admin/customers/1/resend-verification \
-  -H "Cookie: payload-token=<token_admin>"
+curl.exe -s -X POST http://localhost:3001/api/admin/customers/1/resend-verification -H "Cookie: payload-token=<token_admin>"
 ```
 
 Attendu : HTTP 200 si customer non verifie. HTTP 400 si deja verifie.
