@@ -1,7 +1,25 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig, CollectionBeforeOperationHook } from 'payload'
+import { APIError } from 'payload'
 import { isAdmin, isSelfOrAdmin } from '../access/is-admin.ts'
 import { generateVerificationEmailHTML, generateVerificationEmailSubject } from '../email/verification-email.ts'
 import { generateResetPasswordEmailHTML, generateResetPasswordEmailSubject } from '../email/reset-password-email.ts'
+
+const blockDisabledLogin: CollectionBeforeOperationHook = async ({ operation, args, req }) => {
+  if (operation !== 'login') return args
+  const data = (args as Record<string, unknown>).data as Record<string, unknown> | undefined
+  const email = typeof data?.email === 'string' ? data.email : null
+  if (!email) return args
+  const result = await req.payload.find({
+    collection: 'customers',
+    where: { email: { equals: email }, disabled: { equals: true } },
+    limit: 1,
+    overrideAccess: true,
+  })
+  if (result.docs.length > 0) {
+    throw new APIError('Ce compte est désactivé.', 401, undefined, true)
+  }
+  return args
+}
 
 export const Customers: CollectionConfig = {
   slug: 'customers',
@@ -38,6 +56,9 @@ export const Customers: CollectionConfig = {
         ],
       },
     },
+  },
+  hooks: {
+    beforeOperation: [blockDisabledLogin],
   },
   access: {
     create: () => true,
