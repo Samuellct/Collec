@@ -68,6 +68,18 @@ export const Customers: CollectionConfig = {
   },
   fields: [
     {
+      name: 'pseudo',
+      type: 'text',
+      required: true,
+      unique: true,
+      index: true,
+      minLength: 3,
+      maxLength: 30,
+      admin: {
+        description: 'Identifiant public unique, 3 à 30 caractères.',
+      },
+    },
+    {
       name: 'disabled',
       type: 'checkbox',
       defaultValue: false,
