@@ -197,6 +197,8 @@ export interface Customer {
   updatedAt: string;
   createdAt: string;
   email: string;
+  pseudo: string;
+  disabled?: boolean | null;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
   salt?: string | null;
