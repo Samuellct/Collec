@@ -42,12 +42,12 @@ export const Customers: CollectionConfig = {
       generateEmailSubject: () => generateResetPasswordEmailSubject(),
     },
   },
+  defaultSort: '-createdAt',
   admin: {
     useAsTitle: 'email',
     group: 'Utilisateurs',
     hidden: ({ user }) => user?.collection !== 'admins',
     defaultColumns: ['email', 'pseudo', '_verified', 'disabled', 'createdAt'],
-    defaultSort: '-createdAt',
     listSearchableFields: ['email', 'pseudo'],
     components: {
       edit: {

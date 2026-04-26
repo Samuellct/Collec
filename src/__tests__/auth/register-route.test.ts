@@ -67,8 +67,7 @@ describe('POST /api/auth/register', () => {
 
   it('returns 400 when pseudo is missing', async () => {
     mockedVerify.mockResolvedValueOnce(true)
-    const { pseudo: _, ...bodyWithoutPseudo } = validBody
-    const res = await POST(makeRequest(bodyWithoutPseudo))
+    const res = await POST(makeRequest({ email: validBody.email, password: validBody.password, turnstileToken: validBody.turnstileToken }))
     expect(res.status).toBe(400)
   })
 
