@@ -28,6 +28,16 @@ export const Customers: CollectionConfig = {
     useAsTitle: 'email',
     group: 'Utilisateurs',
     hidden: ({ user }) => user?.collection !== 'admins',
+    defaultColumns: ['email', 'pseudo', '_verified', 'disabled', 'createdAt'],
+    defaultSort: '-createdAt',
+    listSearchableFields: ['email', 'pseudo'],
+    components: {
+      edit: {
+        beforeDocumentControls: [
+          '@/components/admin/ResendVerificationButton#ResendVerificationButton',
+        ],
+      },
+    },
   },
   access: {
     create: () => true,
@@ -35,5 +45,15 @@ export const Customers: CollectionConfig = {
     update: isSelfOrAdmin,
     delete: isAdmin,
   },
-  fields: [],
+  fields: [
+    {
+      name: 'disabled',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        description: 'Désactiver ce compte pour empêcher la connexion.',
+        position: 'sidebar',
+      },
+    },
+  ],
 }
