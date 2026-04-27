@@ -1,3 +1,18 @@
+interface TmdbCrewMember {
+  job: string
+  name: string
+}
+
+interface TmdbCastMember {
+  name: string
+  order: number
+}
+
+interface TmdbCredits {
+  crew: TmdbCrewMember[]
+  cast: TmdbCastMember[]
+}
+
 export interface TmdbMovieResult {
   id: number
   title: string
@@ -7,6 +22,7 @@ export interface TmdbMovieResult {
   poster_path: string | null
   imdb_id?: string
   runtime?: number
+  credits?: TmdbCredits
 }
 
 export interface TmdbTvResult {
@@ -17,6 +33,8 @@ export interface TmdbTvResult {
   overview: string
   poster_path: string | null
   number_of_seasons?: number
+  created_by?: Array<{ name: string }>
+  credits?: TmdbCredits
 }
 
 export interface TmdbSearchMovieItem {
@@ -71,6 +89,8 @@ export interface NormalizedMediaItem {
   poster_url: string | null
   tmdb_id: number
   imdb_id: string | null
+  director: string | null
+  cast: string | null
   source_of_truth: 'tmdb'
   source_last_synced_at: string
   source_expires_at: string

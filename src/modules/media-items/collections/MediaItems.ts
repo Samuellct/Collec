@@ -89,6 +89,17 @@ export const MediaItems: CollectionConfig = {
       type: 'text',
     },
     {
+      name: 'director',
+      type: 'text',
+    },
+    {
+      name: 'cast',
+      type: 'text',
+      admin: {
+        description: 'Acteurs principaux, séparés par virgule (10 max).',
+      },
+    },
+    {
       name: 'source_of_truth',
       type: 'select',
       options: [{ label: 'TMDB', value: 'tmdb' }],

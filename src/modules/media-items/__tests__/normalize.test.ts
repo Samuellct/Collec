@@ -11,6 +11,17 @@ const movieFixture: TmdbMovieResult = {
   poster_path: '/d5NXSklXo0qyIYkgV94XAgMIckC.jpg',
   imdb_id: 'tt1160419',
   runtime: 155,
+  credits: {
+    crew: [
+      { job: 'Director', name: 'Denis Villeneuve' },
+      { job: 'Producer', name: 'Somebody Else' },
+    ],
+    cast: [
+      { name: 'Timothée Chalamet', order: 0 },
+      { name: 'Zendaya', order: 1 },
+      { name: 'Rebecca Ferguson', order: 2 },
+    ],
+  },
 }
 
 const tvFixture: TmdbTvResult = {
@@ -21,6 +32,14 @@ const tvFixture: TmdbTvResult = {
   overview: "Un professeur de chimie...",
   poster_path: '/ggFHVNu6YYI5L9pCfOacjizRGt.jpg',
   number_of_seasons: 5,
+  created_by: [{ name: 'Vince Gilligan' }],
+  credits: {
+    crew: [],
+    cast: [
+      { name: 'Bryan Cranston', order: 0 },
+      { name: 'Aaron Paul', order: 1 },
+    ],
+  },
 }
 
 describe('normalizeMovie', () => {
@@ -61,6 +80,34 @@ describe('normalizeMovie', () => {
     expect(result.year).toBeNull()
     expect(result.release_date).toBeNull()
   })
+
+  it('extracts director from credits crew', () => {
+    const result = normalizeMovie(movieFixture)
+    expect(result.director).toBe('Denis Villeneuve')
+  })
+
+  it('extracts cast as CSV from credits', () => {
+    const result = normalizeMovie(movieFixture)
+    expect(result.cast).toBe('Timothée Chalamet, Zendaya, Rebecca Ferguson')
+  })
+
+  it('returns null director when no Director in crew', () => {
+    const fixture = { ...movieFixture, credits: { crew: [{ job: 'Producer', name: 'A' }], cast: [] } }
+    const result = normalizeMovie(fixture)
+    expect(result.director).toBeNull()
+  })
+
+  it('returns null cast when no credits', () => {
+    const result = normalizeMovie({ ...movieFixture, credits: undefined })
+    expect(result.director).toBeNull()
+    expect(result.cast).toBeNull()
+  })
+
+  it('limits cast to 10 actors', () => {
+    const manyCast = Array.from({ length: 15 }, (_, i) => ({ name: `Actor ${i}`, order: i }))
+    const result = normalizeMovie({ ...movieFixture, credits: { crew: movieFixture.credits!.crew, cast: manyCast } })
+    expect(result.cast?.split(', ').length).toBe(10)
+  })
 })
 
 describe('normalizeTv', () => {
@@ -76,5 +123,20 @@ describe('normalizeTv', () => {
     expect(result.imdb_id).toBeNull()
     expect(result.release_date).toBe('2008-01-20')
     expect(result.source_of_truth).toBe('tmdb')
+  })
+
+  it('extracts director from created_by', () => {
+    const result = normalizeTv(tvFixture)
+    expect(result.director).toBe('Vince Gilligan')
+  })
+
+  it('extracts cast from credits', () => {
+    const result = normalizeTv(tvFixture)
+    expect(result.cast).toBe('Bryan Cranston, Aaron Paul')
+  })
+
+  it('returns null director when no created_by', () => {
+    const result = normalizeTv({ ...tvFixture, created_by: [] })
+    expect(result.director).toBeNull()
   })
 })
