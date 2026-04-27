@@ -264,6 +264,11 @@ export interface MediaItem {
   media_type: number | MediaType;
   tmdb_id?: number | null;
   imdb_id?: string | null;
+  director?: string | null;
+  /**
+   * Acteurs principaux, séparés par virgule (10 max).
+   */
+  cast?: string | null;
   source_of_truth?: 'tmdb' | null;
   source_last_synced_at?: string | null;
   source_expires_at?: string | null;
@@ -671,6 +676,8 @@ export interface MediaItemsSelect<T extends boolean = true> {
   media_type?: T;
   tmdb_id?: T;
   imdb_id?: T;
+  director?: T;
+  cast?: T;
   source_of_truth?: T;
   source_last_synced_at?: T;
   source_expires_at?: T;
