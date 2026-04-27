@@ -1,3 +1,13 @@
+# [0.10.0](https://github.com/Samuellct/Collec/compare/v0.9.0...v0.10.0) (2026-04-27)
+
+
+### Features
+
+* **layout:** add Footer with TMDB and JustWatch attributions ([7b74b92](https://github.com/Samuellct/Collec/commit/7b74b9254fb85cbdcaf4e8122dac060055195484))
+* **layout:** add semantic CSS variables and main content wrapper ([8b4bb11](https://github.com/Samuellct/Collec/commit/8b4bb117812042935b4c75556674e5bf097325dd))
+* **layout:** create Header component with Découvrir navigation ([f380ddb](https://github.com/Samuellct/Collec/commit/f380ddb6d5cd2a68a994689a10cc4bdb25468f22))
+* **layout:** show pseudo and profile link in connected nav ([e340317](https://github.com/Samuellct/Collec/commit/e340317cf7d86bf9f97d7104a34a5896ef00a246))
+
 # [0.9.0](https://github.com/Samuellct/Collec/compare/v0.8.0...v0.9.0) (2026-04-27)
 
 
