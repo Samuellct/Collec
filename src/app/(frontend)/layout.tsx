@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { fraunces, sourceSerif4, sourceSans3 } from '@/lib/fonts'
+import { kalam, fraunces, sourceSerif4, sourceSans3 } from '@/lib/fonts'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import './globals.css'
@@ -7,6 +7,7 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'Collec Club',
   description: 'Construis ta culture, film apres film.',
+  icons: { icon: '/favicon.svg' },
 }
 
 export default function FrontendLayout({
@@ -17,7 +18,7 @@ export default function FrontendLayout({
   return (
     <html
       lang="fr"
-      className={`${fraunces.variable} ${sourceSerif4.variable} ${sourceSans3.variable}`}
+      className={`${kalam.variable} ${fraunces.variable} ${sourceSerif4.variable} ${sourceSans3.variable}`}
     >
       <body className="min-h-screen font-sans bg-bg text-ink flex flex-col">
         <Header />

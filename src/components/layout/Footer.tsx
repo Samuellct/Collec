@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 
 export function Footer() {
   return (
@@ -14,7 +15,17 @@ export function Footer() {
         </div>
 
         <div className="flex flex-col gap-3 font-sans text-[0.78rem] text-[var(--muted)]">
-          <p>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+          <div className="flex items-center gap-2">
+            <Image
+              src="/tmdb.svg"
+              alt="TMDB"
+              width={95}
+              height={41}
+              className="h-5 w-auto"
+              unoptimized
+            />
+            <span>This product uses the TMDB API but is not endorsed or certified by TMDB.</span>
+          </div>
           <p>Données de streaming fournies par JustWatch.</p>
           <div className="flex items-center gap-3">
             <Link href="/mentions-legales" className="hover:text-copper transition-colors">

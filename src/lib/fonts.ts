@@ -1,4 +1,11 @@
-import { Fraunces, Source_Serif_4, Source_Sans_3 } from 'next/font/google'
+import { Fraunces, Kalam, Source_Serif_4, Source_Sans_3 } from 'next/font/google'
+
+export const kalam = Kalam({
+  subsets: ['latin'],
+  weight: '700',
+  variable: '--font-kalam',
+  display: 'swap',
+})
 
 export const fraunces = Fraunces({
   subsets: ['latin'],
