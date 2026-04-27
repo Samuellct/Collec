@@ -13,6 +13,21 @@
   --font-sans: var(--font-source-sans-3), sans-serif;
 }
 
+:root {
+  --line: rgba(26, 28, 30, 0.10);
+  --line-strong: rgba(26, 28, 30, 0.16);
+  --accent: #B85C38;
+  --accent-h: #9A4C2E;
+  --accent-soft: rgba(184, 92, 56, 0.10);
+  --laiton: #B5964D;
+  --laiton-soft: rgba(181, 150, 77, 0.12);
+  --muted: #6B665F;
+  --subtle: #9C9790;
+  --surface: rgba(255, 255, 255, 0.55);
+  --surface-strong: rgba(255, 255, 255, 0.78);
+  --shadow-poster: rgba(30, 20, 15, 0.20);
+}
+
 html {
   background-color: #F4EFE6;
   color: #121417;
