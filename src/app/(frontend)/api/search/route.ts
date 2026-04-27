@@ -75,6 +75,7 @@ export async function GET(req: NextRequest) {
       ) @@ plainto_tsquery('simple', ${q})
       OR similarity(mi.title, ${q}) > 0.2
       OR coalesce(similarity(mi.original_title, ${q}), 0) > 0.2
+      OR coalesce(word_similarity(${q}, mi.director), 0) > 0.4
     ORDER BY fts_rank DESC, trgm_rank DESC
     LIMIT ${MAX_RESULTS}
   `)
