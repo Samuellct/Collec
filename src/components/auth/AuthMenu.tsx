@@ -22,8 +22,8 @@ export function AuthMenu({ user }: AuthMenuProps) {
 
   return (
     <nav className="flex items-center gap-4">
-      <Link href="/settings" className="font-sans text-[0.82rem] text-slate hover:text-copper transition-colors truncate max-w-[180px]">
-        {user.email}
+      <Link href="/profil" className="font-sans text-[0.82rem] text-slate hover:text-copper transition-colors truncate max-w-[180px]">
+        {user.pseudo}
       </Link>
       <LogoutButton />
     </nav>
