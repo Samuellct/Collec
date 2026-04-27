@@ -1,3 +1,11 @@
+## [0.10.1](https://github.com/Samuellct/Collec/compare/v0.10.0...v0.10.1) (2026-04-27)
+
+
+### Bug Fixes
+
+* **layout:** add TMDB logo to footer attribution ([7825534](https://github.com/Samuellct/Collec/commit/7825534bdf8e501639550d3ce95bafcb12459c86))
+* **layout:** use wordmark SVG in header with Kalam font, add favicon ([6205249](https://github.com/Samuellct/Collec/commit/620524964efb7bd0568dbb637961bb09aa640f38))
+
 # [0.10.0](https://github.com/Samuellct/Collec/compare/v0.9.0...v0.10.0) (2026-04-27)
 
 
