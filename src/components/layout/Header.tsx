@@ -8,11 +8,21 @@ export async function Header() {
   return (
     <header className="border-b border-[var(--line)] px-6 py-4">
       <div className="mx-auto flex max-w-[1080px] items-center justify-between">
-        <Link
-          href="/"
-          className="font-display text-[1.1rem] font-semibold tracking-[-0.025em] text-ink hover:text-copper transition-colors"
-        >
-          Collec Club
+        <Link href="/" aria-label="Collec Club — Accueil">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 520 150"
+            role="img"
+            aria-hidden="true"
+            className="h-8 w-auto"
+          >
+            <defs>
+              <style>{`.wm{font-family:var(--font-kalam),cursive;font-weight:700;font-size:84px}`}</style>
+            </defs>
+            <text x="24" y="100" className="wm" fill="#1A1C1E">Collec</text>
+            <text x="290" y="100" className="wm" fill="#B85C38">Club</text>
+            <line x1="26" y1="118" x2="494" y2="118" stroke="#B85C38" strokeWidth="2.5" strokeLinecap="round"/>
+          </svg>
         </Link>
 
         <nav className="hidden sm:flex items-center gap-6">

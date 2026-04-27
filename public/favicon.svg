@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Collec Club">
+  <rect width="64" height="64" rx="8" fill="#B85C38"/>
+  <text x="16" y="42"
+        text-anchor="middle"
+        font-family="Fraunces, 'Times New Roman', serif"
+        font-weight="700"
+        font-size="32"
+        fill="#F4EFE6"
+        style="font-variation-settings: 'opsz' 144;">C</text>
+  <circle cx="32" cy="31" r="2.3" fill="#F4EFE6"/>
+  <text x="48" y="42"
+        text-anchor="middle"
+        font-family="Fraunces, 'Times New Roman', serif"
+        font-weight="700"
+        font-size="32"
+        fill="#F4EFE6"
+        style="font-variation-settings: 'opsz' 144;">C</text>
+  <path d="M 14 51 Q 32 57 50 51"
+        stroke="#F4EFE6" stroke-width="2" fill="none" stroke-linecap="round"/>
+</svg>
