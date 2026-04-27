@@ -1,3 +1,21 @@
+# [0.8.0](https://github.com/Samuellct/Collec/compare/v0.7.1...v0.8.0) (2026-04-27)
+
+
+### Bug Fixes
+
+* **users:** move defaultSort to collection level, fix lint in register tests ([a0bfcce](https://github.com/Samuellct/Collec/commit/a0bfcce136725cf0d6ec1b40b561cc90981f62a9))
+
+
+### Features
+
+* **admin:** add resend-verification button in customer edit view ([4241068](https://github.com/Samuellct/Collec/commit/4241068370383d828bd89fb7d8d7459c3cdc1e69))
+* **admin:** add resend-verification-email route handler ([12ad05f](https://github.com/Samuellct/Collec/commit/12ad05ff119207b13cb88a8cef84ac4e2b51d837))
+* **auth:** block login for disabled customer accounts ([d3c28d8](https://github.com/Samuellct/Collec/commit/d3c28d82dbb12006cccff8d838f223a629634e59))
+* **auth:** require pseudo at registration ([9c71cde](https://github.com/Samuellct/Collec/commit/9c71cde9eb42653f679fcdd7a540b009159ea9f2))
+* **settings:** add pseudo update form to settings page ([f265c0f](https://github.com/Samuellct/Collec/commit/f265c0f187137032e2bf9d65ec2bc2ed2ebcf527))
+* **users:** add disabled field and configure customers admin list view ([9285361](https://github.com/Samuellct/Collec/commit/9285361df54ef62fc7049df0ec6481f61bae12c9))
+* **users:** add pseudo field to Customers collection ([f8bdfd4](https://github.com/Samuellct/Collec/commit/f8bdfd404759a0edf07f87f5a501e73ef5a4f8d7))
+
 ## [0.7.1](https://github.com/Samuellct/Collec/compare/v0.7.0...v0.7.1) (2026-04-25)
 
 
