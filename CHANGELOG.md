@@ -1,3 +1,19 @@
+# [0.9.0](https://github.com/Samuellct/Collec/compare/v0.8.0...v0.9.0) (2026-04-27)
+
+
+### Bug Fixes
+
+* **migrations:** repair index.ts after bad merge conflict resolution ([0cad589](https://github.com/Samuellct/Collec/commit/0cad5899d8adbaed18f81b02a9660dce67829d9d))
+* **search:** add word_similarity on director for fuzzy person name matching ([cf6e80b](https://github.com/Samuellct/Collec/commit/cf6e80b113ad5a1861d8af663026b1951f4aa86f))
+
+
+### Features
+
+* **media-items:** add director and cast fields with TMDB credits ([5f19623](https://github.com/Samuellct/Collec/commit/5f1962366f3a17e99f4521ebbb8bf7cb0630bb0c))
+* **search:** add in-memory rate limiting ([01e9725](https://github.com/Samuellct/Collec/commit/01e972562a78f2fc1a7e4a040225e798cdd5b943))
+* **search:** configure pg_trgm and GIN indexes on media_items ([9273ccf](https://github.com/Samuellct/Collec/commit/9273ccff2de2c73ca623ae7d84c60acc3bbb747f))
+* **search:** implement GET /api/search with FTS and pg_trgm ([5a18ae0](https://github.com/Samuellct/Collec/commit/5a18ae0af115dbd9cce88ac1bd0bce548420a736))
+
 # [0.8.0](https://github.com/Samuellct/Collec/compare/v0.7.1...v0.8.0) (2026-04-27)
 
 
