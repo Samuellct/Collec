@@ -13,6 +13,7 @@ import { TurnstileWidget } from '@/modules/auth/turnstile/TurnstileWidget'
 export default function RegisterPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')
+  const [pseudo, setPseudo] = useState('')
   const [password, setPassword] = useState('')
   const [turnstileToken, setTurnstileToken] = useState('')
   const [error, setError] = useState('')
@@ -30,10 +31,12 @@ export default function RegisterPage() {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, turnstileToken }),
+        body: JSON.stringify({ email, password, pseudo, turnstileToken }),
       })
       if (res.status === 201) {
         router.push(`/verify-email-sent?email=${encodeURIComponent(email)}`)
+      } else if (res.status === 409) {
+        setError('Ce pseudo est déjà utilisé. Choisis-en un autre.')
       } else {
         setError('Inscription impossible. Vérifie les informations et réessaie.')
       }
@@ -57,6 +60,20 @@ export default function RegisterPage() {
             placeholder="toi@exemple.fr"
             required
             autoComplete="email"
+          />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="pseudo">Pseudo</Label>
+          <Input
+            id="pseudo"
+            type="text"
+            value={pseudo}
+            onChange={(e) => setPseudo(e.target.value)}
+            placeholder="3 à 30 caractères"
+            minLength={3}
+            maxLength={30}
+            required
+            autoComplete="username"
           />
         </div>
         <div className="flex flex-col gap-1.5">

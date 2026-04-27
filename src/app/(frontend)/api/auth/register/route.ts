@@ -18,14 +18,16 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     body === null ||
     typeof (body as Record<string, unknown>).email !== 'string' ||
     typeof (body as Record<string, unknown>).password !== 'string' ||
+    typeof (body as Record<string, unknown>).pseudo !== 'string' ||
     typeof (body as Record<string, unknown>).turnstileToken !== 'string'
   ) {
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
   }
 
-  const { email, password, turnstileToken } = body as {
+  const { email, password, pseudo, turnstileToken } = body as {
     email: string
     password: string
+    pseudo: string
     turnstileToken: string
   }
 
@@ -37,6 +39,11 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
   }
 
+  const trimmedPseudo = pseudo.trim()
+  if (trimmedPseudo.length < 3 || trimmedPseudo.length > 30) {
+    return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
+  }
+
   const remoteIp = req.headers.get('x-forwarded-for') ?? undefined
   const valid = await verifyTurnstileToken(turnstileToken, remoteIp)
   if (!valid) {
@@ -45,8 +52,22 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   const payload = await getPayload({ config })
 
+  // Vérification unicité du pseudo (contrairement à l'email, on révèle le conflit)
+  const existingPseudo = await payload.find({
+    collection: 'customers',
+    where: { pseudo: { equals: trimmedPseudo } },
+    limit: 1,
+    overrideAccess: true,
+  })
+  if (existingPseudo.docs.length > 0) {
+    return NextResponse.json({ error: 'Ce pseudo est déjà utilisé.' }, { status: 409 })
+  }
+
   try {
-    await payload.create({ collection: 'customers', data: { email, password } })
+    await payload.create({
+      collection: 'customers',
+      data: { email, password, pseudo: trimmedPseudo },
+    })
   } catch {
     // Reponse neutre : ne pas reveler si l'email existe deja (anti-enumeration)
   }

@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { getCurrentUser } from '@/lib/auth/get-current-user'
 import { ChangePasswordForm } from './ChangePasswordForm'
+import { ChangePseudoForm } from './ChangePseudoForm'
 
 export default async function SettingsPage() {
   const user = await getCurrentUser()
@@ -23,6 +24,20 @@ export default async function SettingsPage() {
               Adresse email
             </p>
             <p className="font-serif text-[1rem] text-slate">{user.email}</p>
+          </div>
+        </section>
+        <section className="mt-10">
+          <h2 className="font-display text-[1.1rem] font-semibold tracking-[-0.025em] text-ink">
+            Changer le pseudo
+          </h2>
+          <div className="mt-4 flex flex-col gap-1.5">
+            <p className="font-sans text-[0.74rem] font-bold uppercase tracking-[0.09em] text-copper">
+              Pseudo actuel
+            </p>
+            <p className="font-serif text-[1rem] text-slate">{user.pseudo ?? ''}</p>
+          </div>
+          <div className="mt-6">
+            <ChangePseudoForm userId={user.id} currentPseudo={user.pseudo ?? ''} />
           </div>
         </section>
         <section className="mt-10">
