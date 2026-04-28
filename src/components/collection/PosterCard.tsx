@@ -112,7 +112,11 @@ export function PosterCard({
       )}
 
       {showModal && (
-        <DatePickerModal onConfirm={handleConfirmDate} onClose={handleCloseModal} />
+        <DatePickerModal
+          onConfirm={handleConfirmDate}
+          onClose={handleCloseModal}
+          onCancel={() => setShowModal(false)}
+        />
       )}
     </article>
   )

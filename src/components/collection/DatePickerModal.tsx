@@ -8,6 +8,7 @@ type DateChoice = 'today' | 'yesterday' | 'custom'
 interface DatePickerModalProps {
   onConfirm: (watchedAt: string) => void
   onClose: () => void
+  onCancel: () => void
 }
 
 function resolveDate(choice: DateChoice, customDate: string): string {
@@ -22,7 +23,7 @@ function resolveDate(choice: DateChoice, customDate: string): string {
   return new Date().toISOString()
 }
 
-export function DatePickerModal({ onConfirm, onClose }: DatePickerModalProps) {
+export function DatePickerModal({ onConfirm, onClose, onCancel }: DatePickerModalProps) {
   const [choice, setChoice] = useState<DateChoice>('today')
   const [customDate, setCustomDate] = useState('')
 
@@ -98,7 +99,7 @@ export function DatePickerModal({ onConfirm, onClose }: DatePickerModalProps) {
 
         <div className="flex items-center justify-end gap-3">
           <button
-            onClick={onClose}
+            onClick={onCancel}
             className="font-sans text-[0.83rem] text-[var(--muted)] transition-colors hover:text-ink"
           >
             Annuler
