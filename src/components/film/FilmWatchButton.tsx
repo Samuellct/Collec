@@ -8,7 +8,7 @@ interface FilmWatchButtonProps {
   initialWatchedItemId: number | null
   isAuthenticated: boolean
   onMarkWatched: (mediaItemId: number, watchedAt: string) => Promise<void>
-  onRemoveWatched: (watchedItemId: number, mediaItemId: number) => Promise<void>
+  onRemoveWatched: (watchedItemId: number) => Promise<void>
 }
 
 export function FilmWatchButton({
@@ -55,7 +55,7 @@ export function FilmWatchButton({
     const id = optimisticId
     startTransition(async () => {
       updateOptimistic(null)
-      await onRemoveWatched(id, mediaItemId)
+      await onRemoveWatched(id)
     })
   }
 

@@ -170,7 +170,7 @@ function StepFilmCard({ mediaItem, isDone, className }: StepFilmCardProps) {
 
   return (
     <Link
-      href={`/films/${mediaItem.id}`}
+      href={`/films/${mediaItem.slug ?? mediaItem.id}`}
       className={cn(
         'flex max-w-[500px] items-start gap-[14px] rounded-[4px] border border-[var(--line-strong)] bg-[var(--surface)] p-3 text-inherit no-underline transition-[border-color,box-shadow] hover:border-[var(--accent)] hover:shadow-[0_2px_8px_var(--accent-soft)]',
         className,

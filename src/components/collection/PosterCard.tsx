@@ -40,7 +40,7 @@ export function PosterCard({
     <article className="flex flex-col gap-[9px]">
       {/* Poster */}
       <div className="relative">
-        <Link href={`/films/${mediaItem.id}`} tabIndex={-1} aria-hidden="true">
+        <Link href={`/films/${mediaItem.slug ?? mediaItem.id}`} tabIndex={-1} aria-hidden="true">
           <div className="relative aspect-[2/3] overflow-hidden rounded-[3px] shadow-[0_2px_10px_var(--shadow-poster)] transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_8px_24px_var(--shadow-poster)]">
             {mediaItem.poster_url ? (
               <Image
@@ -72,7 +72,7 @@ export function PosterCard({
       {/* Métadonnées */}
       <div>
         <Link
-          href={`/films/${mediaItem.id}`}
+          href={`/films/${mediaItem.slug ?? mediaItem.id}`}
           className="block font-serif text-[0.86rem] font-medium leading-[1.3] text-ink transition-colors hover:text-copper line-clamp-2"
         >
           {mediaItem.title}
