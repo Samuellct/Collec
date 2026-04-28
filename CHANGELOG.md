@@ -1,3 +1,12 @@
+# [0.13.0](https://github.com/Samuellct/Collec/compare/v0.12.0...v0.13.0) (2026-04-28)
+
+
+### Features
+
+* **films:** add /films/[id] page with full data fetching ([53cc707](https://github.com/Samuellct/Collec/commit/53cc707e43221eb24c91c66260511086365a5889))
+* **films:** add watch button client component ([b837ef3](https://github.com/Samuellct/Collec/commit/b837ef355df608991b3c642bac031ecec131491f))
+* **films:** add watched marking server actions ([7107ead](https://github.com/Samuellct/Collec/commit/7107eada27d6d8132359ad6c05269d9220c130ef))
+
 # [0.12.0](https://github.com/Samuellct/Collec/compare/v0.11.0...v0.12.0) (2026-04-28)
 
 
