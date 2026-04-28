@@ -12,7 +12,6 @@ interface PosterCardProps {
   item: PopulatedCollectionItem
   isWatched: boolean
   watchedItemId: number | undefined
-  isNext: boolean
   onMarkWatched: (mediaItemId: number, watchedAt: string) => void
   onRemoveWatched: (mediaItemId: number, watchedItemId: number) => void
 }
@@ -21,7 +20,6 @@ export function PosterCard({
   item,
   isWatched,
   watchedItemId,
-  isNext,
   onMarkWatched,
   onRemoveWatched,
 }: PosterCardProps) {
@@ -42,12 +40,6 @@ export function PosterCard({
     <article className="flex flex-col gap-[9px]">
       {/* Poster */}
       <div className="relative">
-        {isNext && (
-          <span className="absolute left-[7px] top-[7px] z-10 rounded-[3px] bg-[var(--laiton)] px-[7px] py-[3px] font-sans text-[0.62rem] font-bold uppercase tracking-[0.06em] text-white">
-            Prochain
-          </span>
-        )}
-
         <Link href={`/films/${mediaItem.id}`} tabIndex={-1} aria-hidden="true">
           <div className="relative aspect-[2/3] overflow-hidden rounded-[3px] shadow-[0_2px_10px_var(--shadow-poster)] transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_8px_24px_var(--shadow-poster)]">
             {mediaItem.poster_url ? (

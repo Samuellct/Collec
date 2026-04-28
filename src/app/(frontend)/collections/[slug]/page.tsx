@@ -4,10 +4,8 @@ import config from '@payload-config'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getCurrentUser } from '@/lib/auth/get-current-user'
-import { getNextUnwatchedItem } from '@/modules/progress/lib/next-unwatched-item'
 import { PosterGrid } from '@/components/collection/PosterGrid'
 import { ProgressBar } from '@/components/collection/ProgressBar'
-import { NextItemCard } from '@/components/collection/NextItemCard'
 import { markWatched, removeWatched } from './actions'
 import type { CollectionItem, MediaItem, UserCollectionProgress } from '@/payload-types'
 
@@ -67,7 +65,6 @@ export default async function CollectionPage({ params }: Props) {
 
   let watchedMap: Record<number, number> = {}
   let progress: UserCollectionProgress | null = null
-  let nextItem: PopulatedCollectionItem | null = null
 
   if (user) {
     const mediaItemIds = items.map((item) => item.media_item.id)
@@ -103,18 +100,7 @@ export default async function CollectionPage({ params }: Props) {
     ) as Record<number, number>
 
     progress = progressResult.docs[0] ?? null
-
-    const raw = await getNextUnwatchedItem(payload, user.id, collection.id)
-    if (raw) {
-      const full = items.find((i) => {
-        const mid = typeof raw.media_item === 'number' ? raw.media_item : raw.media_item.id
-        return i.media_item.id === mid
-      })
-      nextItem = full ?? null
-    }
   }
-
-  const nextItemMediaId = nextItem?.media_item.id ?? null
 
   return (
     <div>
@@ -168,13 +154,6 @@ export default async function CollectionPage({ params }: Props) {
         </section>
       )}
 
-      {/* CTA Prochain */}
-      {user && nextItem && (
-        <div className="mb-8">
-          <NextItemCard item={nextItem} />
-        </div>
-      )}
-
       {/* Grille */}
       <section className="border-t border-[var(--line)] pt-10">
         <div className="mb-8 flex items-center gap-4">
@@ -188,7 +167,6 @@ export default async function CollectionPage({ params }: Props) {
         <PosterGrid
           items={items}
           watchedMap={watchedMap}
-          nextItemMediaId={nextItemMediaId}
           markWatched={markWatched}
           removeWatched={removeWatched}
           collectionSlug={slug}

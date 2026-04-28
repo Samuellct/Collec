@@ -33,7 +33,6 @@ function compareByTitle(a: PopulatedCollectionItem, b: PopulatedCollectionItem):
 interface PosterGridProps {
   items: PopulatedCollectionItem[]
   watchedMap: Record<number, number>
-  nextItemMediaId: number | null
   markWatched: (mediaItemId: number, watchedAt: string, collectionSlug: string) => Promise<void>
   removeWatched: (watchedItemId: number, collectionSlug: string) => Promise<void>
   collectionSlug: string
@@ -43,7 +42,6 @@ interface PosterGridProps {
 export function PosterGrid({
   items,
   watchedMap,
-  nextItemMediaId,
   markWatched,
   removeWatched,
   collectionSlug,
@@ -134,7 +132,6 @@ export function PosterGrid({
               item={item}
               isWatched={isWatched}
               watchedItemId={watchedItemId}
-              isNext={mediaId === nextItemMediaId}
               onMarkWatched={isAuthenticated ? handleMarkWatched : handleUnauthenticated}
               onRemoveWatched={handleRemoveWatched}
             />
