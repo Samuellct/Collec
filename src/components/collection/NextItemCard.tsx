@@ -12,7 +12,7 @@ export function NextItemCard({ item }: NextItemCardProps) {
 
   return (
     <Link
-      href={`/films/${mediaItem.id}`}
+      href={`/films/${mediaItem.slug ?? mediaItem.id}`}
       className="flex items-center gap-[14px] rounded-[4px] border border-[var(--line-strong)] bg-[var(--surface)] px-4 py-3 transition-[border-color,box-shadow] hover:border-[var(--accent)] hover:shadow-[0_2px_8px_var(--accent-soft)]"
     >
       <span className="shrink-0 font-sans text-[0.72rem] font-bold uppercase tracking-[0.08em] text-[var(--accent)]">

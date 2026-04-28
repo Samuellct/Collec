@@ -5,7 +5,11 @@ import config from '@payload-config'
 import { revalidatePath } from 'next/cache'
 import { getCurrentUser } from '@/lib/auth/get-current-user'
 
-export async function markWatched(mediaItemId: number, watchedAt: string): Promise<void> {
+export async function markWatched(
+  filmSlug: string,
+  mediaItemId: number,
+  watchedAt: string,
+): Promise<void> {
   const user = await getCurrentUser()
   if (!user) throw new Error('Non authentifié')
 
@@ -26,10 +30,10 @@ export async function markWatched(mediaItemId: number, watchedAt: string): Promi
     })
   }
 
-  revalidatePath(`/films/${mediaItemId}`)
+  revalidatePath(`/films/${filmSlug}`)
 }
 
-export async function removeWatched(watchedItemId: number, mediaItemId: number): Promise<void> {
+export async function removeWatched(filmSlug: string, watchedItemId: number): Promise<void> {
   const user = await getCurrentUser()
   if (!user) throw new Error('Non authentifié')
 
@@ -49,5 +53,5 @@ export async function removeWatched(watchedItemId: number, mediaItemId: number):
     overrideAccess: true,
   })
 
-  revalidatePath(`/films/${mediaItemId}`)
+  revalidatePath(`/films/${filmSlug}`)
 }

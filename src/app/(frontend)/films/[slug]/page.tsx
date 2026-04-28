@@ -20,7 +20,7 @@ import type {
 } from '@/payload-types'
 
 type Props = {
-  params: Promise<{ id: string }>
+  params: Promise<{ slug: string }>
 }
 
 type PopulatedCollectionItem = CollectionItem & { collection: Collection }
@@ -35,43 +35,54 @@ function formatDuration(duration: number | null | undefined, slug: string): stri
   return m === 0 ? `${h}h` : `${h}h${String(m).padStart(2, '0')}`
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { id: idParam } = await params
-  const id = parseInt(idParam, 10)
-  if (isNaN(id)) return { title: 'Collec Club' }
-  const payload = await getPayload({ config })
-  try {
-    const item = await payload.findByID({
-      collection: 'media-items',
-      id,
-      depth: 0,
-      overrideAccess: true,
-    })
-    return { title: `${item.title} — Collec Club` }
-  } catch {
-    return { title: 'Film introuvable — Collec Club' }
+async function findMediaItem(
+  payload: Awaited<ReturnType<typeof import('payload').getPayload>>,
+  slugParam: string,
+): Promise<(MediaItem & { media_type: MediaType }) | null> {
+  // Try by slug first
+  const bySlug = await payload.find({
+    collection: 'media-items',
+    where: { slug: { equals: slugParam } },
+    depth: 1,
+    limit: 1,
+    overrideAccess: true,
+  })
+  if (bySlug.docs.length > 0) {
+    return bySlug.docs[0] as MediaItem & { media_type: MediaType }
   }
+
+  // Fallback: if param looks like a numeric ID (legacy links), fetch by ID
+  if (/^\d+$/.test(slugParam)) {
+    try {
+      const byId = await payload.findByID({
+        collection: 'media-items',
+        id: parseInt(slugParam, 10),
+        depth: 1,
+        overrideAccess: true,
+      })
+      return byId as MediaItem & { media_type: MediaType }
+    } catch {
+      return null
+    }
+  }
+
+  return null
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug: slugParam } = await params
+  const payload = await getPayload({ config })
+  const mediaItem = await findMediaItem(payload, slugParam)
+  if (!mediaItem) return { title: 'Film introuvable — Collec Club' }
+  return { title: `${mediaItem.title} — Collec Club` }
 }
 
 export default async function FilmPage({ params }: Props) {
-  const { id: idParam } = await params
-  const id = parseInt(idParam, 10)
-  if (isNaN(id)) notFound()
-
+  const { slug: slugParam } = await params
   const payload = await getPayload({ config })
 
-  let mediaItem: MediaItem & { media_type: MediaType }
-  try {
-    const raw = await payload.findByID({
-      collection: 'media-items',
-      id,
-      depth: 1,
-      overrideAccess: true,
-    })
-    mediaItem = raw as MediaItem & { media_type: MediaType }
-  } catch {
-    notFound()
-  }
+  const mediaItem = await findMediaItem(payload, slugParam)
+  if (!mediaItem) notFound()
 
   const mediaType = mediaItem.media_type as MediaType
   const tmdbMediaType: 'movie' | 'tv' = mediaType.slug === 'series' ? 'tv' : 'movie'
@@ -86,14 +97,14 @@ export default async function FilmPage({ params }: Props) {
   const [ciResult, psResult] = await Promise.all([
     payload.find({
       collection: 'collection-items',
-      where: { media_item: { equals: id } },
+      where: { media_item: { equals: mediaItem.id } },
       depth: 1,
       limit: 20,
       overrideAccess: true,
     }),
     payload.find({
       collection: 'pathway-steps',
-      where: { media_item: { equals: id } },
+      where: { media_item: { equals: mediaItem.id } },
       depth: 1,
       limit: 20,
       overrideAccess: true,
@@ -121,7 +132,7 @@ export default async function FilmPage({ params }: Props) {
     const [watchedResult, cpResult, ppResult] = await Promise.all([
       payload.find({
         collection: 'user-watched-items',
-        where: { and: [{ user: { equals: user.id } }, { media_item: { equals: id } }] },
+        where: { and: [{ user: { equals: user.id } }, { media_item: { equals: mediaItem.id } }] },
         depth: 0,
         limit: 1,
         overrideAccess: true,
@@ -172,6 +183,10 @@ export default async function FilmPage({ params }: Props) {
       watchProviders.rent.length > 0 ||
       watchProviders.buy.length > 0)
 
+  // Bind filmSlug so FilmWatchButton doesn't need to know about it
+  const boundMarkWatched = markWatched.bind(null, slugParam)
+  const boundRemoveWatched = removeWatched.bind(null, slugParam)
+
   return (
     <div>
       {/* Hero */}
@@ -206,11 +221,11 @@ export default async function FilmPage({ params }: Props) {
 
             <div className="max-[640px]:flex max-[640px]:flex-1 max-[640px]:flex-col max-[640px]:justify-end">
               <FilmWatchButton
-                mediaItemId={id}
+                mediaItemId={mediaItem.id}
                 initialWatchedItemId={watchedItemId}
                 isAuthenticated={!!user}
-                onMarkWatched={markWatched}
-                onRemoveWatched={removeWatched}
+                onMarkWatched={boundMarkWatched}
+                onRemoveWatched={boundRemoveWatched}
               />
             </div>
           </div>
