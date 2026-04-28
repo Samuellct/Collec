@@ -1,3 +1,18 @@
+# [0.11.0](https://github.com/Samuellct/Collec/compare/v0.10.1...v0.11.0) (2026-04-28)
+
+
+### Bug Fixes
+
+* **collection:** Annuler closes modal without marking, only backdrop/Escape marks today ([f96d0ae](https://github.com/Samuellct/Collec/commit/f96d0aeaa79e91bb6b703324fd7c33f3106d1991))
+
+
+### Features
+
+* **collection:** add /collections/[slug] page with data fetching ([3bfe71f](https://github.com/Samuellct/Collec/commit/3bfe71f4154e294362a6bb496815ff575e5db202))
+* **collection:** add poster grid with watched overlay and next badge ([66b6277](https://github.com/Samuellct/Collec/commit/66b627761a04d0b0f8c5ae360f778c573ff65e86))
+* **collection:** add progress bar and completion state ([10dff72](https://github.com/Samuellct/Collec/commit/10dff72dca4c1e7366fe4f93a0c437cfcb109bed))
+* **collection:** add watched marking with server actions and date picker modal ([60dc8f2](https://github.com/Samuellct/Collec/commit/60dc8f2066b19be65faa32550c0251c0cb0f18a0))
+
 ## [0.10.1](https://github.com/Samuellct/Collec/compare/v0.10.0...v0.10.1) (2026-04-27)
 
 
