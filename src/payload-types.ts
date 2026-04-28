@@ -251,6 +251,10 @@ export interface MediaItem {
    * Titre FR. Modifiable manuellement — un re-sync TMDB écrasera cette valeur.
    */
   title: string;
+  /**
+   * Identifiant URL unique. Auto-généré depuis le titre + année si vide.
+   */
+  slug?: string | null;
   original_title?: string | null;
   year?: number | null;
   /**
@@ -677,6 +681,7 @@ export interface MediaTypesSelect<T extends boolean = true> {
  */
 export interface MediaItemsSelect<T extends boolean = true> {
   title?: T;
+  slug?: T;
   original_title?: T;
   year?: T;
   release_date?: T;

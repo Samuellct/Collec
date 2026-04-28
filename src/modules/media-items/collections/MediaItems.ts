@@ -2,6 +2,19 @@ import type { CollectionConfig } from 'payload'
 import { isAdmin } from '../../auth/access/is-admin.ts'
 import { importTmdbEndpoint } from '../endpoints/import-tmdb.ts'
 import { searchTmdbEndpoint } from '../endpoints/search-tmdb.ts'
+import { backfillSlugsEndpoint } from '../endpoints/backfill-slugs.ts'
+
+const COMBINING_DIACRITICS = /\p{M}/gu
+
+function toSlug(title: string, year?: number | null): string {
+  const base = title
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(COMBINING_DIACRITICS, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+  return year ? `${base}-${year}` : base
+}
 
 export const MediaItems: CollectionConfig = {
   slug: 'media-items',
@@ -19,7 +32,7 @@ export const MediaItems: CollectionConfig = {
     update: isAdmin,
     delete: isAdmin,
   },
-  endpoints: [importTmdbEndpoint, searchTmdbEndpoint],
+  endpoints: [importTmdbEndpoint, searchTmdbEndpoint, backfillSlugsEndpoint],
   indexes: [
     {
       fields: ['tmdb_id', 'media_type'],
@@ -33,6 +46,29 @@ export const MediaItems: CollectionConfig = {
       required: true,
       admin: {
         description: 'Titre FR. Modifiable manuellement — un re-sync TMDB écrasera cette valeur.',
+      },
+    },
+    {
+      name: 'slug',
+      type: 'text',
+      unique: true,
+      index: true,
+      admin: {
+        description: 'Identifiant URL unique. Auto-généré depuis le titre + année si vide.',
+        position: 'sidebar',
+      },
+      hooks: {
+        beforeChange: [
+          ({ value, data }: { value?: string | null; data?: Record<string, unknown> }) => {
+            if (!value && data) {
+              return toSlug(
+                (data.title as string) ?? '',
+                (data.year as number | null | undefined) ?? null,
+              )
+            }
+            return value ?? null
+          },
+        ],
       },
     },
     {
