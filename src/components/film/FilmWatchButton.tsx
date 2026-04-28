@@ -1,0 +1,122 @@
+'use client'
+
+import { useOptimistic, useTransition, useState } from 'react'
+import { DatePickerModal } from '@/components/collection/DatePickerModal'
+
+interface FilmWatchButtonProps {
+  mediaItemId: number
+  initialWatchedItemId: number | null
+  isAuthenticated: boolean
+  onMarkWatched: (mediaItemId: number, watchedAt: string) => Promise<void>
+  onRemoveWatched: (watchedItemId: number, mediaItemId: number) => Promise<void>
+}
+
+export function FilmWatchButton({
+  mediaItemId,
+  initialWatchedItemId,
+  isAuthenticated,
+  onMarkWatched,
+  onRemoveWatched,
+}: FilmWatchButtonProps) {
+  const [showModal, setShowModal] = useState(false)
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false)
+  const [, startTransition] = useTransition()
+  const [optimisticId, updateOptimistic] = useOptimistic(
+    initialWatchedItemId,
+    (_: number | null, next: number | null) => next,
+  )
+
+  function handleClickMark() {
+    if (!isAuthenticated) {
+      setShowLoginPrompt(true)
+      return
+    }
+    setShowModal(true)
+  }
+
+  function handleConfirmDate(watchedAt: string) {
+    setShowModal(false)
+    startTransition(async () => {
+      updateOptimistic(-1)
+      await onMarkWatched(mediaItemId, watchedAt)
+    })
+  }
+
+  function handleCloseModal() {
+    setShowModal(false)
+    startTransition(async () => {
+      updateOptimistic(-1)
+      await onMarkWatched(mediaItemId, new Date().toISOString())
+    })
+  }
+
+  function handleRemove() {
+    if (!optimisticId || optimisticId === -1) return
+    const id = optimisticId
+    startTransition(async () => {
+      updateOptimistic(null)
+      await onRemoveWatched(id, mediaItemId)
+    })
+  }
+
+  const isWatched = optimisticId !== null && optimisticId !== -1
+
+  return (
+    <div className="flex flex-col gap-2">
+      {isWatched ? (
+        <button
+          onClick={handleRemove}
+          className="flex w-full items-center justify-center gap-2 rounded-[4px] border border-[var(--line-strong)] bg-[var(--surface)] px-4 py-[9px] font-sans text-[0.88rem] text-[var(--muted)] transition-colors hover:border-copper hover:text-copper"
+          aria-label="Retirer ce film de mes vus"
+        >
+          <CheckIcon />
+          Vu · Retirer
+        </button>
+      ) : (
+        <button
+          onClick={handleClickMark}
+          disabled={optimisticId === -1}
+          className="flex w-full items-center justify-center gap-2 rounded-[4px] bg-[var(--accent)] px-4 py-[9px] font-sans text-[0.88rem] font-medium text-white transition-colors hover:bg-[var(--accent-h)] disabled:opacity-60"
+          aria-label="Marquer ce film comme vu"
+        >
+          <CheckIcon />
+          Marquer comme vu
+        </button>
+      )}
+
+      {showLoginPrompt && (
+        <p className="text-center font-sans text-[0.78rem] text-[var(--muted)]">
+          <a
+            href="/login"
+            className="font-semibold text-[var(--accent)] transition-colors hover:text-[var(--accent-h)]"
+          >
+            Connecte-toi
+          </a>{' '}
+          pour suivre ta progression.
+        </p>
+      )}
+
+      {showModal && (
+        <DatePickerModal
+          onConfirm={handleConfirmDate}
+          onClose={handleCloseModal}
+          onCancel={() => setShowModal(false)}
+        />
+      )}
+    </div>
+  )
+}
+
+function CheckIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <polyline
+        points="2,7.5 5.5,11 12,4"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
