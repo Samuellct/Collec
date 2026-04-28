@@ -1,3 +1,11 @@
+# [0.14.0](https://github.com/Samuellct/Collec/compare/v0.13.0...v0.14.0) (2026-04-28)
+
+
+### Features
+
+* **films:** migrate route from [id] to [slug] with legacy id fallback ([3e86a9a](https://github.com/Samuellct/Collec/commit/3e86a9ab2e1de914373207077a7f963990c541c8))
+* **media-items:** add slug field with auto-generation and backfill endpoint ([e6414da](https://github.com/Samuellct/Collec/commit/e6414da2472928414c78e64d7e78dbfe88c67a02))
+
 # [0.13.0](https://github.com/Samuellct/Collec/compare/v0.12.0...v0.13.0) (2026-04-28)
 
 
