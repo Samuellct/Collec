@@ -45,9 +45,9 @@ export function PathwayStepCard({
 
   const labelText =
     state === 'done'
-      ? `Étape ${position} — Complétée`
+      ? `Étape ${position} · Complétée`
       : state === 'current'
-        ? `Étape ${position} — En cours`
+        ? `Étape ${position} · En cours`
         : `Étape ${position}`
 
   const heading = step.step_title || mediaItem.title
