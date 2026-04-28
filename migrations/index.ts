@@ -11,6 +11,7 @@ import * as migration_20260426_100000_add_disabled_to_customers from './20260426
 import * as migration_20260426_100100_add_pseudo_to_customers from './20260426_100100_add_pseudo_to_customers';
 import * as migration_20260427_130833_add_director_cast_to_media_items from './20260427_130833_add_director_cast_to_media_items';
 import * as migration_20260427_131000_add_fts_indexes_to_media_items from './20260427_131000_add_fts_indexes_to_media_items';
+import * as migration_20260428_add_slug_to_media_items from './20260428_add_slug_to_media_items';
 
 export const migrations = [
   {
@@ -77,5 +78,10 @@ export const migrations = [
     up: migration_20260427_131000_add_fts_indexes_to_media_items.up,
     down: migration_20260427_131000_add_fts_indexes_to_media_items.down,
     name: '20260427_131000_add_fts_indexes_to_media_items',
+  },
+  {
+    up: migration_20260428_add_slug_to_media_items.up,
+    down: migration_20260428_add_slug_to_media_items.down,
+    name: '20260428_add_slug_to_media_items',
   },
 ];
