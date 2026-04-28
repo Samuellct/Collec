@@ -1,3 +1,18 @@
+# [0.12.0](https://github.com/Samuellct/Collec/compare/v0.11.0...v0.12.0) (2026-04-28)
+
+
+### Bug Fixes
+
+* **parcours:** replace em-dash with interpunct in step labels ([cf734ae](https://github.com/Samuellct/Collec/commit/cf734ae1d4cc17c861527aff9d94b20009fb2791))
+
+
+### Features
+
+* **parcours:** add /parcours/[slug] page with data fetching ([639f552](https://github.com/Samuellct/Collec/commit/639f552002518fc898c48d1e914e50be6d676e86))
+* **parcours:** add pathway progress bar ([90237b1](https://github.com/Samuellct/Collec/commit/90237b112023a1243841c2127f44775628be6b3a))
+* **parcours:** add pathway timeline with step states and editorial notes ([f57d785](https://github.com/Samuellct/Collec/commit/f57d7850ada2e1d2358755156a5916d5d98033e9))
+* **parcours:** add watched marking server actions ([6d98d3c](https://github.com/Samuellct/Collec/commit/6d98d3cbf41f326d1fbfe28f8dc37b7990d549a5))
+
 # [0.11.0](https://github.com/Samuellct/Collec/compare/v0.10.1...v0.11.0) (2026-04-28)
 
 
