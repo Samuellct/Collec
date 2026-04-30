@@ -9,6 +9,7 @@ import { CollectionProgressCard } from '@/components/profile/CollectionProgressC
 import { PathwayCard } from '@/components/profile/PathwayCard'
 import { RecentActivityList } from '@/components/profile/RecentActivityList'
 import type { ActivityItem } from '@/components/profile/RecentActivityList'
+import { EnChiffres } from '@/components/profile/EnChiffres'
 import type {
   MediaType,
   MediaItem,
@@ -87,6 +88,22 @@ export default async function ProfilPage() {
   const seriesVues = watchedItems.filter((w) => w.media_item.media_type.slug === 'series').length
   const collectionsCompletees = collectionProgress.filter((p) => p.is_completed).length
   const parcoursComplets = pathwayProgress.filter((p) => p.is_completed).length
+
+  // "En chiffres" stats
+  const oeuvresVues = watchedItems.length
+  const collectionsDeMarrees = collectionProgress.filter((p) => p.percentage > 0).length
+  const startedCollections = collectionProgress.filter((p) => p.percentage > 0)
+  const tauxCompletionMoyen =
+    startedCollections.length > 0
+      ? Math.round(
+          startedCollections.reduce((sum, p) => sum + p.percentage, 0) / startedCollections.length,
+        )
+      : null
+  const realisateursDecouverts = new Set(
+    watchedItems
+      .filter((w) => w.media_item.media_type.slug === 'film' && w.media_item.director)
+      .map((w) => w.media_item.director as string),
+  ).size
 
   const collectionsEnCours = collectionProgress
     .filter((p) => !p.is_completed && p.percentage > 0)
@@ -266,6 +283,19 @@ export default async function ProfilPage() {
           </section>
         </aside>
       </div>
+
+      {/* En chiffres */}
+      {oeuvresVues > 0 && (
+        <section className="border-t pb-10 pt-8" style={{ borderColor: 'var(--line)' }}>
+          <SectionTitle>En chiffres</SectionTitle>
+          <EnChiffres
+            oeuvresVues={oeuvresVues}
+            collectionsDeMarrees={collectionsDeMarrees}
+            tauxCompletionMoyen={tauxCompletionMoyen}
+            realisateursDecouverts={realisateursDecouverts}
+          />
+        </section>
+      )}
     </main>
   )
 }
