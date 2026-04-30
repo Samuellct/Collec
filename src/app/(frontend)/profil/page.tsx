@@ -1,8 +1,12 @@
 import { redirect } from 'next/navigation'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import Link from 'next/link'
+import type { ReactNode } from 'react'
 import { getCurrentUser } from '@/lib/auth/get-current-user'
 import { ProfileStats } from '@/components/profile/ProfileStats'
+import { CollectionProgressCard } from '@/components/profile/CollectionProgressCard'
+import { PathwayCard } from '@/components/profile/PathwayCard'
 import type {
   MediaType,
   MediaItem,
@@ -13,7 +17,6 @@ import type {
   UserPathwayProgress,
 } from '@/payload-types'
 
-// Populated types — depth 2 for watched items, depth 1 for progress
 type PopulatedWatchedItem = Omit<UserWatchedItem, 'media_item'> & {
   media_item: Omit<MediaItem, 'media_type'> & { media_type: MediaType }
 }
@@ -27,6 +30,19 @@ type PopulatedPathwayProgress = Omit<UserPathwayProgress, 'pathway'> & {
 function formatMemberSince(dateStr: string): string {
   return new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(
     new Date(dateStr),
+  )
+}
+
+function SectionTitle({ children }: { children: ReactNode }) {
+  return (
+    <h2 className="mb-5 flex items-center gap-3 font-display text-[1.15rem] font-semibold tracking-[-0.025em] text-ink">
+      {children}
+      <span
+        className="flex-1"
+        style={{ height: '1px', background: 'var(--line)' }}
+        aria-hidden="true"
+      />
+    </h2>
   )
 }
 
@@ -65,14 +81,18 @@ export default async function ProfilPage() {
   const collectionProgress = collectionProgressResult.docs as PopulatedCollectionProgress[]
   const pathwayProgress = pathwayProgressResult.docs as PopulatedPathwayProgress[]
 
-  const filmsVus = watchedItems.filter(
-    (w) => w.media_item.media_type.slug === 'film',
-  ).length
-  const seriesVues = watchedItems.filter(
-    (w) => w.media_item.media_type.slug === 'series',
-  ).length
+  const filmsVus = watchedItems.filter((w) => w.media_item.media_type.slug === 'film').length
+  const seriesVues = watchedItems.filter((w) => w.media_item.media_type.slug === 'series').length
   const collectionsCompletees = collectionProgress.filter((p) => p.is_completed).length
   const parcoursComplets = pathwayProgress.filter((p) => p.is_completed).length
+
+  const collectionsEnCours = collectionProgress
+    .filter((p) => !p.is_completed && p.percentage > 0)
+    .sort((a, b) => b.percentage - a.percentage)
+
+  const parcoursEnCours = pathwayProgress
+    .filter((p) => !p.is_completed && p.percentage > 0)
+    .sort((a, b) => b.percentage - a.percentage)
 
   const pseudo = user.pseudo ?? 'Utilisateur'
   const initial = pseudo[0].toUpperCase()
@@ -109,7 +129,56 @@ export default async function ProfilPage() {
 
       {/* Two-column body */}
       <div className="grid grid-cols-[1fr_320px] items-start gap-12 py-10 max-[800px]:grid-cols-1 max-[800px]:gap-8">
-        <div>{/* Main column — content à venir */}</div>
+        {/* Main column */}
+        <div>
+          {/* Collections en cours */}
+          <section className="mb-9">
+            <SectionTitle>Collections en cours</SectionTitle>
+            {collectionsEnCours.length === 0 ? (
+              <p className="font-serif text-[0.9rem]" style={{ color: 'var(--muted)' }}>
+                Tu n&apos;as pas encore démarré de collection.{' '}
+                <Link
+                  href="/explorer"
+                  className="underline underline-offset-2"
+                  style={{ color: 'var(--accent)' }}
+                >
+                  Explorer les collections
+                </Link>
+              </p>
+            ) : (
+              collectionsEnCours.map((p) => (
+                <CollectionProgressCard
+                  key={p.id}
+                  title={p.collection.title}
+                  slug={p.collection.slug}
+                  percentage={p.percentage}
+                  itemsSeen={p.items_seen}
+                  itemsTotal={p.items_total}
+                  variant="in-progress"
+                />
+              ))
+            )}
+          </section>
+
+          {/* Parcours en cours */}
+          {parcoursEnCours.length > 0 && (
+            <section>
+              <SectionTitle>Parcours en cours</SectionTitle>
+              {parcoursEnCours.map((p) => (
+                <PathwayCard
+                  key={p.id}
+                  title={p.pathway.title}
+                  slug={p.pathway.slug}
+                  percentage={p.percentage}
+                  stepsCompleted={p.steps_completed}
+                  stepsTotal={p.steps_total}
+                  variant="in-progress"
+                />
+              ))}
+            </section>
+          )}
+        </div>
+
         <aside>{/* Sidebar — content à venir */}</aside>
       </div>
     </main>
