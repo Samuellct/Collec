@@ -1,3 +1,22 @@
+# [0.15.0](https://github.com/Samuellct/Collec/compare/v0.14.0...v0.15.0) (2026-04-30)
+
+
+### Bug Fixes
+
+* **layout:** compact footer on mobile ([45dcad7](https://github.com/Samuellct/Collec/commit/45dcad7c9c3c1e92576b158b80570c9d8de967e2))
+* **profil:** add --bordeaux custom property to :root for avatar gradient ([7c4a389](https://github.com/Samuellct/Collec/commit/7c4a3890b1112576e1e281b66a695dd897934f0e))
+* **profil:** responsive stats row — 2x2 grid on mobile, lighter visual weight ([8b1a111](https://github.com/Samuellct/Collec/commit/8b1a1117e7c045ba4fa701f8238fba3927c77f6f))
+
+
+### Features
+
+* **profil:** add "En chiffres" section with detailed stats ([d9eabcd](https://github.com/Samuellct/Collec/commit/d9eabcd43f93e294194ffdf12d12f3f051a565cb))
+* **profil:** create /profil page with auth guard, layout and user identity ([ab90f15](https://github.com/Samuellct/Collec/commit/ab90f15bd3bb640cc6bf9a2185eed70a359652fe))
+* **profil:** display completed collections and pathways ([87b5f59](https://github.com/Samuellct/Collec/commit/87b5f596abd656ed3dd2b645184fd11d131d7c29))
+* **profil:** display in-progress collections and pathways ([acebdb6](https://github.com/Samuellct/Collec/commit/acebdb6b90667bb0de9651acf93e89d1bb0b61ea))
+* **profil:** display recent activity in sidebar ([c6b845b](https://github.com/Samuellct/Collec/commit/c6b845b68fc39d117e2a195116f1cd167997e83b))
+* **profil:** display user statistics (films, series, collections, pathways) ([c054cf5](https://github.com/Samuellct/Collec/commit/c054cf5c8df7f003f2582fcb2147b16ad1054337))
+
 # [0.14.0](https://github.com/Samuellct/Collec/compare/v0.13.0...v0.14.0) (2026-04-28)
 
 
