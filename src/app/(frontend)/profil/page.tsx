@@ -1,5 +1,28 @@
 import { redirect } from 'next/navigation'
+import { getPayload } from 'payload'
+import config from '@payload-config'
 import { getCurrentUser } from '@/lib/auth/get-current-user'
+import { ProfileStats } from '@/components/profile/ProfileStats'
+import type {
+  MediaType,
+  MediaItem,
+  Collection,
+  Pathway,
+  UserWatchedItem,
+  UserCollectionProgress,
+  UserPathwayProgress,
+} from '@/payload-types'
+
+// Populated types — depth 2 for watched items, depth 1 for progress
+type PopulatedWatchedItem = Omit<UserWatchedItem, 'media_item'> & {
+  media_item: Omit<MediaItem, 'media_type'> & { media_type: MediaType }
+}
+type PopulatedCollectionProgress = Omit<UserCollectionProgress, 'collection'> & {
+  collection: Collection
+}
+type PopulatedPathwayProgress = Omit<UserPathwayProgress, 'pathway'> & {
+  pathway: Pathway
+}
 
 function formatMemberSince(dateStr: string): string {
   return new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(
@@ -12,6 +35,44 @@ export default async function ProfilPage() {
   if (!user) {
     redirect('/login?next=/profil')
   }
+
+  const payload = await getPayload({ config })
+
+  const [watchedResult, collectionProgressResult, pathwayProgressResult] = await Promise.all([
+    payload.find({
+      collection: 'user-watched-items',
+      where: { user: { equals: user.id } },
+      depth: 2,
+      sort: '-watched_at',
+      limit: 200,
+      overrideAccess: true,
+    }),
+    payload.find({
+      collection: 'user-collection-progress',
+      where: { user: { equals: user.id } },
+      depth: 1,
+      overrideAccess: true,
+    }),
+    payload.find({
+      collection: 'user-pathway-progress',
+      where: { user: { equals: user.id } },
+      depth: 1,
+      overrideAccess: true,
+    }),
+  ])
+
+  const watchedItems = watchedResult.docs as PopulatedWatchedItem[]
+  const collectionProgress = collectionProgressResult.docs as PopulatedCollectionProgress[]
+  const pathwayProgress = pathwayProgressResult.docs as PopulatedPathwayProgress[]
+
+  const filmsVus = watchedItems.filter(
+    (w) => w.media_item.media_type.slug === 'film',
+  ).length
+  const seriesVues = watchedItems.filter(
+    (w) => w.media_item.media_type.slug === 'series',
+  ).length
+  const collectionsCompletees = collectionProgress.filter((p) => p.is_completed).length
+  const parcoursComplets = pathwayProgress.filter((p) => p.is_completed).length
 
   const pseudo = user.pseudo ?? 'Utilisateur'
   const initial = pseudo[0].toUpperCase()
@@ -37,6 +98,13 @@ export default async function ProfilPage() {
             </p>
           </div>
         </div>
+
+        <ProfileStats
+          filmsVus={filmsVus}
+          seriesVues={seriesVues}
+          collectionsCompletees={collectionsCompletees}
+          parcoursComplets={parcoursComplets}
+        />
       </div>
 
       {/* Two-column body */}
