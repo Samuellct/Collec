@@ -7,6 +7,8 @@ import { getCurrentUser } from '@/lib/auth/get-current-user'
 import { ProfileStats } from '@/components/profile/ProfileStats'
 import { CollectionProgressCard } from '@/components/profile/CollectionProgressCard'
 import { PathwayCard } from '@/components/profile/PathwayCard'
+import { RecentActivityList } from '@/components/profile/RecentActivityList'
+import type { ActivityItem } from '@/components/profile/RecentActivityList'
 import type {
   MediaType,
   MediaItem,
@@ -109,6 +111,31 @@ export default async function ProfilPage() {
       const dateB = b.completed_at ? new Date(b.completed_at).getTime() : 0
       return dateB - dateA
     })
+
+  // Activity: merge watched items + completed milestones, sorted by date DESC
+  const activityItems: ActivityItem[] = [
+    ...watchedItems.slice(0, 10).map((w): ActivityItem => ({
+      type: 'watched',
+      title: w.media_item.title,
+      date: w.watched_at,
+    })),
+    ...collectionProgress
+      .filter((p) => p.is_completed && p.completed_at)
+      .map((p): ActivityItem => ({
+        type: 'collection-done',
+        title: p.collection.title,
+        date: p.completed_at!,
+      })),
+    ...pathwayProgress
+      .filter((p) => p.is_completed && p.completed_at)
+      .map((p): ActivityItem => ({
+        type: 'pathway-done',
+        title: p.pathway.title,
+        date: p.completed_at!,
+      })),
+  ]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 15)
 
   const pseudo = user.pseudo ?? 'Utilisateur'
   const initial = pseudo[0].toUpperCase()
@@ -231,7 +258,13 @@ export default async function ProfilPage() {
           )}
         </div>
 
-        <aside>{/* Sidebar — content à venir */}</aside>
+        {/* Sidebar */}
+        <aside>
+          <section>
+            <SectionTitle>Activité récente</SectionTitle>
+            <RecentActivityList items={activityItems} />
+          </section>
+        </aside>
       </div>
     </main>
   )
