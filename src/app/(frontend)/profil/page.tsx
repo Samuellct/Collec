@@ -90,9 +90,25 @@ export default async function ProfilPage() {
     .filter((p) => !p.is_completed && p.percentage > 0)
     .sort((a, b) => b.percentage - a.percentage)
 
+  const collectionsTerminees = collectionProgress
+    .filter((p) => p.is_completed)
+    .sort((a, b) => {
+      const dateA = a.completed_at ? new Date(a.completed_at).getTime() : 0
+      const dateB = b.completed_at ? new Date(b.completed_at).getTime() : 0
+      return dateB - dateA
+    })
+
   const parcoursEnCours = pathwayProgress
     .filter((p) => !p.is_completed && p.percentage > 0)
     .sort((a, b) => b.percentage - a.percentage)
+
+  const parcoursTermines = pathwayProgress
+    .filter((p) => p.is_completed)
+    .sort((a, b) => {
+      const dateA = a.completed_at ? new Date(a.completed_at).getTime() : 0
+      const dateB = b.completed_at ? new Date(b.completed_at).getTime() : 0
+      return dateB - dateA
+    })
 
   const pseudo = user.pseudo ?? 'Utilisateur'
   const initial = pseudo[0].toUpperCase()
@@ -160,9 +176,27 @@ export default async function ProfilPage() {
             )}
           </section>
 
+          {/* Collections terminées */}
+          {collectionsTerminees.length > 0 && (
+            <section className="mb-9">
+              <SectionTitle>Collections terminées</SectionTitle>
+              {collectionsTerminees.map((p) => (
+                <CollectionProgressCard
+                  key={p.id}
+                  title={p.collection.title}
+                  slug={p.collection.slug}
+                  percentage={p.percentage}
+                  itemsSeen={p.items_seen}
+                  itemsTotal={p.items_total}
+                  variant="completed"
+                />
+              ))}
+            </section>
+          )}
+
           {/* Parcours en cours */}
           {parcoursEnCours.length > 0 && (
-            <section>
+            <section className="mb-9">
               <SectionTitle>Parcours en cours</SectionTitle>
               {parcoursEnCours.map((p) => (
                 <PathwayCard
@@ -173,6 +207,24 @@ export default async function ProfilPage() {
                   stepsCompleted={p.steps_completed}
                   stepsTotal={p.steps_total}
                   variant="in-progress"
+                />
+              ))}
+            </section>
+          )}
+
+          {/* Parcours terminés */}
+          {parcoursTermines.length > 0 && (
+            <section>
+              <SectionTitle>Parcours terminés</SectionTitle>
+              {parcoursTermines.map((p) => (
+                <PathwayCard
+                  key={p.id}
+                  title={p.pathway.title}
+                  slug={p.pathway.slug}
+                  percentage={p.percentage}
+                  stepsCompleted={p.steps_completed}
+                  stepsTotal={p.steps_total}
+                  variant="completed"
                 />
               ))}
             </section>
