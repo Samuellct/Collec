@@ -1,3 +1,11 @@
+# [0.16.0](https://github.com/Samuellct/Collec/compare/v0.15.0...v0.16.0) (2026-04-30)
+
+
+### Features
+
+* **explorer:** add collection cards with cover image and accessibility level ([09d91db](https://github.com/Samuellct/Collec/commit/09d91db34b42b35493d3dc9928ca69ae5cdb4c90))
+* **explorer:** create /explorer page with published collections and pathways ([cb20b74](https://github.com/Samuellct/Collec/commit/cb20b74bc7ddbc92ad71db8e62c356324a28e2ff))
+
 # [0.15.0](https://github.com/Samuellct/Collec/compare/v0.14.0...v0.15.0) (2026-04-30)
 
 
