@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import type { Badge, UserBadge } from '@/payload-types'
 
 type PopulatedUserBadge = Omit<UserBadge, 'badge'> & { badge: Badge }
@@ -51,7 +52,7 @@ function BadgeItem({ userBadge }: { userBadge: PopulatedUserBadge }) {
         aria-hidden="true"
       >
         {badge.icon_url ? (
-          <img
+          <Image
             src={badge.icon_url}
             alt=""
             width={36}

@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import Image from 'next/image'
 
 export interface EarnedBadge {
   id: number
@@ -20,20 +21,7 @@ export function BadgeToast({ badges, onDismiss }: BadgeToastProps) {
 
   const badge = badges[index]
 
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => setVisible(true))
-
-    timerRef.current = setTimeout(() => {
-      handleDismiss()
-    }, 6000)
-
-    return () => {
-      cancelAnimationFrame(frame)
-      if (timerRef.current) clearTimeout(timerRef.current)
-    }
-  }, [index])
-
-  function handleDismiss() {
+  const handleDismiss = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current)
     if (index < badges.length - 1) {
       setVisible(false)
@@ -45,7 +33,16 @@ export function BadgeToast({ badges, onDismiss }: BadgeToastProps) {
       setVisible(false)
       setTimeout(onDismiss, 300)
     }
-  }
+  }, [index, badges.length, onDismiss])
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => setVisible(true))
+    timerRef.current = setTimeout(handleDismiss, 6000)
+    return () => {
+      cancelAnimationFrame(frame)
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
+  }, [index, handleDismiss])
 
   if (!badge) return null
 
@@ -94,7 +91,7 @@ export function BadgeToast({ badges, onDismiss }: BadgeToastProps) {
         aria-hidden="true"
       >
         {badge.icon_url ? (
-          <img src={badge.icon_url} alt="" width={28} height={28} style={{ objectFit: 'contain' }} />
+          <Image src={badge.icon_url} alt="" width={28} height={28} style={{ objectFit: 'contain' }} />
         ) : (
           <TrophyIcon />
         )}
