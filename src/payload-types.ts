@@ -80,6 +80,8 @@ export interface Config {
     'user-watched-items': UserWatchedItem;
     'user-collection-progress': UserCollectionProgress;
     'user-pathway-progress': UserPathwayProgress;
+    badges: Badge;
+    'user-badges': UserBadge;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -106,6 +108,8 @@ export interface Config {
     'user-watched-items': UserWatchedItemsSelect<false> | UserWatchedItemsSelect<true>;
     'user-collection-progress': UserCollectionProgressSelect<false> | UserCollectionProgressSelect<true>;
     'user-pathway-progress': UserPathwayProgressSelect<false> | UserPathwayProgressSelect<true>;
+    badges: BadgesSelect<false> | BadgesSelect<true>;
+    'user-badges': UserBadgesSelect<false> | UserBadgesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -494,6 +498,45 @@ export interface UserPathwayProgress {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "badges".
+ */
+export interface Badge {
+  id: number;
+  /**
+   * Identifiant stable, ne pas modifier après création.
+   */
+  slug: string;
+  title: string;
+  description?: string | null;
+  /**
+   * URL de l'icône du badge (chemin public ou URL externe).
+   */
+  icon_url?: string | null;
+  condition_type:
+    | 'first_collection'
+    | 'first_pathway'
+    | 'milestone_10'
+    | 'milestone_50'
+    | 'milestone_100'
+    | 'milestone_250'
+    | 'milestone_500';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "user-badges".
+ */
+export interface UserBadge {
+  id: number;
+  user: number | Customer;
+  badge: number | Badge;
+  earned_at: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -563,6 +606,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'user-pathway-progress';
         value: number | UserPathwayProgress;
+      } | null)
+    | ({
+        relationTo: 'badges';
+        value: number | Badge;
+      } | null)
+    | ({
+        relationTo: 'user-badges';
+        value: number | UserBadge;
       } | null);
   globalSlug?: string | null;
   user:
@@ -812,6 +863,30 @@ export interface UserPathwayProgressSelect<T extends boolean = true> {
   percentage?: T;
   is_completed?: T;
   completed_at?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "badges_select".
+ */
+export interface BadgesSelect<T extends boolean = true> {
+  slug?: T;
+  title?: T;
+  description?: T;
+  icon_url?: T;
+  condition_type?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "user-badges_select".
+ */
+export interface UserBadgesSelect<T extends boolean = true> {
+  user?: T;
+  badge?: T;
+  earned_at?: T;
   updatedAt?: T;
   createdAt?: T;
 }
