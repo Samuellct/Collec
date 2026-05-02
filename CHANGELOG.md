@@ -1,3 +1,12 @@
+# [0.17.0](https://github.com/Samuellct/Collec/compare/v0.16.0...v0.17.0) (2026-05-02)
+
+
+### Features
+
+* **homepage:** add featured collections and pathways sections ([8cb6453](https://github.com/Samuellct/Collec/commit/8cb645356acf5b0ce0b3660a00e53b633224e0c1))
+* **homepage:** add user progression section for authenticated users ([6ebb617](https://github.com/Samuellct/Collec/commit/6ebb617a79e75286a0c4c0d87b8c25b03658e990))
+* **homepage:** create homepage with hero section and layout structure ([a89491e](https://github.com/Samuellct/Collec/commit/a89491ebc2db1088df256aa298e7ab0e9b62a0da))
+
 # [0.16.0](https://github.com/Samuellct/Collec/compare/v0.15.0...v0.16.0) (2026-04-30)
 
 
