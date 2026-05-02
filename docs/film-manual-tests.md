@@ -1,4 +1,4 @@
-# Tests manuels — Étape 14 : Fiche film/série
+# Tests manuels - Étape 14 : Fiche film/série
 
 ## Environnement
 
@@ -15,19 +15,19 @@ $SERIES_ID = 2  # Remplacer par l'ID d'une série (media_type.slug = 'series')
 ## 1. Accès et 404
 
 ```powershell
-# 1.1 Film valide — doit retourner 200
+# 1.1 Film valide - doit retourner 200
 Invoke-WebRequest "$BASE/films/$VALID_ID" -UseBasicParsing | Select-Object StatusCode
 
-# 1.2 ID inexistant — doit retourner 404
+# 1.2 ID inexistant - doit retourner 404
 Invoke-WebRequest "$BASE/films/99999" -UseBasicParsing -ErrorAction SilentlyContinue | Select-Object StatusCode
 
-# 1.3 ID non numérique — doit retourner 404
+# 1.3 ID non numérique - doit retourner 404
 Invoke-WebRequest "$BASE/films/abc" -UseBasicParsing -ErrorAction SilentlyContinue | Select-Object StatusCode
 ```
 
 ---
 
-## 2. Hero — contenu
+## 2. Hero - contenu
 
 Vérifier manuellement dans le navigateur :
 
@@ -57,7 +57,7 @@ Tester avec différents media items :
 
 ---
 
-## 4. FilmWatchButton — non connecté
+## 4. FilmWatchButton - non connecté
 
 1. Ouvrir `/films/$VALID_ID` sans être connecté
 2. Cliquer sur "Marquer comme vu"
@@ -67,7 +67,7 @@ Tester avec différents media items :
 
 ---
 
-## 5. FilmWatchButton — connecté
+## 5. FilmWatchButton - connecté
 
 1. Se connecter avec un compte test
 2. Ouvrir `/films/$VALID_ID` (film non vu)
@@ -79,7 +79,7 @@ Tester avec différents media items :
 
 ---
 
-## 6. FilmWatchButton — retirer
+## 6. FilmWatchButton - retirer
 
 1. Film déjà marqué vu, bouton affiche "Vu · Retirer"
 2. Cliquer "Vu · Retirer"
@@ -184,13 +184,13 @@ Largeur < 640px (ouvrir DevTools → 390px) :
 ## 14. Vérifications qualité
 
 ```powershell
-# Type-check — 0 erreur attendue
+# Type-check - 0 erreur attendue
 pnpm type-check
 
-# Lint — 0 warning attendu
+# Lint - 0 warning attendu
 pnpm lint
 
-# Tests — 0 régression
+# Tests - 0 régression
 pnpm test
 ```
 
@@ -198,5 +198,5 @@ pnpm test
 
 ## 15. Contrôle tirets longs
 
-Inspecter le DOM : aucun caractère `—` (U+2014) ne doit apparaître dans les textes UI.
-Utiliser la recherche navigateur (Ctrl+F, coller `—`) sur la page film.
+Inspecter le DOM : aucun caractère `-` (U+2014) ne doit apparaître dans les textes UI.
+Utiliser la recherche navigateur (Ctrl+F, coller `-`) sur la page film.

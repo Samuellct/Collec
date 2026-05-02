@@ -1,6 +1,6 @@
-# Tests manuels — Étape 10 : Recherche (PostgreSQL FTS)
+# Tests manuels - Étape 10 : Recherche (PostgreSQL FTS)
 
-**Statut : TOUS LES TESTS PASSENT — 27 avril 2026**
+**Statut : TOUS LES TESTS PASSENT - 27 avril 2026**
 
 Prérequis : `docker compose up -d` + `pnpm dev` démarrés. Au moins 2-3 films importés depuis l'admin TMDB.
 
@@ -30,7 +30,7 @@ Importer un film et une série depuis l'admin (`/admin/collections/media-items`)
 
 ---
 
-## 3. Validation de l'endpoint — cas limites
+## 3. Validation de l'endpoint - cas limites
 
 ```powershell
 # Trop court (1 caractère)
@@ -49,7 +49,7 @@ Invoke-RestMethod -Uri "http://localhost:3001/api/search"
 
 ---
 
-## 4. SEARCH-01 — Recherche par titre
+## 4. SEARCH-01 - Recherche par titre
 
 Tests réalisés avec le film "Incendies" (2010, Denis Villeneuve).
 
@@ -71,7 +71,7 @@ Tests réalisés avec le film "Incendies" (2010, Denis Villeneuve).
 
 ---
 
-## 5. SEARCH-01 — Tolérance aux fautes (pg_trgm)
+## 5. SEARCH-01 - Tolérance aux fautes (pg_trgm)
 
 ```powershell
 # 1 faute sur le titre
@@ -86,7 +86,7 @@ Tests réalisés avec le film "Incendies" (2010, Denis Villeneuve).
 
 ---
 
-## 6. SEARCH-02 — Recherche par réalisateur
+## 6. SEARCH-02 - Recherche par réalisateur
 
 Tests réalisés avec Denis Villeneuve.
 
@@ -107,7 +107,7 @@ Tests réalisés avec Denis Villeneuve.
 
 ---
 
-## 7. SEARCH-02 — Recherche par acteur
+## 7. SEARCH-02 - Recherche par acteur
 
 ```powershell
 # Acteur principal (nom seul)
@@ -148,8 +148,8 @@ curl.exe -s "http://localhost:3001/api/search?q='"
 ```
 
 - [x] Caractères spéciaux -> HTTP 200, `{"results":[]}` (pas d'erreur 500).
-- [x] Quote simple seule -> HTTP 400 (1 caractère, trop court — paramètre jamais atteint le SQL).
-- Note : l'injection SQL est impossible par construction — le paramètre `q` est transmis via le template `sql\`...\${q}...\`` de drizzle-orm, qui paramétrise automatiquement toutes les valeurs interpolées.
+- [x] Quote simple seule -> HTTP 400 (1 caractère, trop court - paramètre jamais atteint le SQL).
+- Note : l'injection SQL est impossible par construction - le paramètre `q` est transmis via le template `sql\`...\${q}...\`` de drizzle-orm, qui paramétrise automatiquement toutes les valeurs interpolées.
 
 ---
 
@@ -159,4 +159,4 @@ curl.exe -s "http://localhost:3001/api/search?q='"
 Measure-Command { Invoke-RestMethod -Uri "http://localhost:3001/api/search?q=incendies" } | Select-Object TotalMilliseconds
 ```
 
-- [x] Temps de réponse entre 50 et 60 ms (bien en dessous de la cible de 500 ms — SEARCH-01 validé).
+- [x] Temps de réponse entre 50 et 60 ms (bien en dessous de la cible de 500 ms - SEARCH-01 validé).

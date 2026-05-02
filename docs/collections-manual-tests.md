@@ -1,6 +1,6 @@
-# Tests manuels — Étape 06 : Collections et CollectionItems
+# Tests manuels - Étape 06 : Collections et CollectionItems
 
-**Statut : TOUS LES TESTS PASSENT — 19 avril 2026**
+**Statut : TOUS LES TESTS PASSENT - 19 avril 2026**
 
 Prérequis : `docker compose up -d postgres` + `pnpm dev` démarrés.
 

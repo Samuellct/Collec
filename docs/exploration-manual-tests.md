@@ -1,4 +1,4 @@
-# Guide de tests manuels — Étape 16 : Page d'exploration
+# Guide de tests manuels - Étape 16 : Page d'exploration
 
 ## Prérequis
 
@@ -14,7 +14,7 @@ Ouvrir le navigateur sur `http://localhost:3000`.
 
 ---
 
-## Test 1 — Accès non connecté
+## Test 1 - Accès non connecté
 
 **Objectif** : la page est publique, aucun redirect.
 
@@ -27,7 +27,7 @@ Ouvrir le navigateur sur `http://localhost:3000`.
 
 ---
 
-## Test 2 — Structure de la page
+## Test 2 - Structure de la page
 
 **Objectif** : titre, barre de recherche, deux sections.
 
@@ -41,7 +41,7 @@ Ouvrir le navigateur sur `http://localhost:3000`.
 
 ---
 
-## Test 3 — Cartes de collection
+## Test 3 - Cartes de collection
 
 **Objectif** : affichage correct des données de collection.
 
@@ -57,7 +57,7 @@ Pour chaque carte de collection visible :
 
 ---
 
-## Test 4 — Cartes de parcours
+## Test 4 - Cartes de parcours
 
 **Objectif** : affichage correct des données de parcours.
 
@@ -73,7 +73,7 @@ Pour chaque carte de parcours visible :
 
 ---
 
-## Test 5 — Recherche avec résultats
+## Test 5 - Recherche avec résultats
 
 **Objectif** : filtre en temps réel sur titre et description.
 
@@ -84,7 +84,7 @@ Pour chaque carte de parcours visible :
 
 ---
 
-## Test 6 — Recherche sans résultat
+## Test 6 - Recherche sans résultat
 
 **Objectif** : message approprié quand aucun résultat.
 
@@ -94,7 +94,7 @@ Pour chaque carte de parcours visible :
 
 ---
 
-## Test 7 — COLL-06 : distinction visuelle (utilisateur connecté)
+## Test 7 - COLL-06 : distinction visuelle (utilisateur connecté)
 
 **Objectif** : badges de progression sur les collections.
 
@@ -113,7 +113,7 @@ Pour chaque carte de parcours visible :
 
 ---
 
-## Test 8 — Ordre d'affichage
+## Test 8 - Ordre d'affichage
 
 **Objectif** : respect du `display_order` défini en admin.
 
@@ -122,7 +122,7 @@ Pour chaque carte de parcours visible :
 
 ---
 
-## Test 9 — Responsive mobile
+## Test 9 - Responsive mobile
 
 **Objectif** : mise en page mobile fonctionnelle.
 
@@ -135,7 +135,7 @@ Pour chaque carte de parcours visible :
 
 ---
 
-## Test 10 — État vide
+## Test 10 - État vide
 
 **Objectif** : message approprié si aucune collection/parcours publiée.
 

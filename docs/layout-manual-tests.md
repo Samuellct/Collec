@@ -1,4 +1,4 @@
-# Tests manuels — Étape 11 : Layout principal et navigation
+# Tests manuels - Étape 11 : Layout principal et navigation
 
 Prérequis : `docker compose up -d` + `pnpm dev` démarrés.
 
@@ -15,7 +15,7 @@ Ouvrir `http://localhost:3001` dans le navigateur.
 
 ---
 
-## 2. Header — contenu et style
+## 2. Header - contenu et style
 
 - [ ] Le logo "Collec Club" est affiché à gauche en Fraunces.
 - [ ] Le logo est un lien cliquable vers `/`.
@@ -25,7 +25,7 @@ Ouvrir `http://localhost:3001` dans le navigateur.
 
 ---
 
-## 3. Header mobile — lien "Découvrir" masqué
+## 3. Header mobile - lien "Découvrir" masqué
 
 Réduire la fenêtre du navigateur sous 640px de largeur (DevTools → mode responsive).
 
@@ -34,7 +34,7 @@ Réduire la fenêtre du navigateur sous 640px de largeur (DevTools → mode resp
 
 ---
 
-## 4. Footer — contenu et style
+## 4. Footer - contenu et style
 
 - [ ] "Collec Club" est affiché en Fraunces dans le footer.
 - [ ] La tagline "La culture à compléter." est affichée sous le nom.
@@ -45,7 +45,7 @@ Réduire la fenêtre du navigateur sous 640px de largeur (DevTools → mode resp
 
 ---
 
-## 5. État déconnecté — zone utilisateur
+## 5. État déconnecté - zone utilisateur
 
 Se déconnecter si connecté, puis vérifier sur `http://localhost:3001`.
 
@@ -56,7 +56,7 @@ Se déconnecter si connecté, puis vérifier sur `http://localhost:3001`.
 
 ---
 
-## 6. État connecté — zone utilisateur
+## 6. État connecté - zone utilisateur
 
 Se connecter avec un compte existant (`/login`), puis vérifier.
 
@@ -82,7 +82,7 @@ Start-Process "http://localhost:3001/settings"
 - [ ] `/login` : header visible.
 - [ ] `/register` : header visible.
 - [ ] `/forgot-password` : header visible.
-- [ ] `/settings` : header visible (ou redirection `/login` si déconnecté — comportement attendu).
+- [ ] `/settings` : header visible (ou redirection `/login` si déconnecté - comportement attendu).
 
 ---
 
