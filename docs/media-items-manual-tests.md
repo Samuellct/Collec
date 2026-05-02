@@ -1,6 +1,6 @@
-# Tests manuels — Étape 05 : MediaItems + intégration TMDB
+# Tests manuels - Étape 05 : MediaItems + intégration TMDB
 
-**Statut : TOUS LES TESTS PASSENT — 19 avril 2026**
+**Statut : TOUS LES TESTS PASSENT - 19 avril 2026**
 
 Prérequis : `docker compose up -d postgres` + `pnpm dev` démarrés. TMDB_API_KEY renseignée dans `.env.local`.
 

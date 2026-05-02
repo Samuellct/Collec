@@ -1,4 +1,4 @@
-# Tests manuels — Étape 12 : Page d'une collection
+# Tests manuels - Étape 12 : Page d'une collection
 
 Prérequis : Docker Compose lancé, `pnpm dev` en cours, une collection publiée avec des films importés depuis TMDB.
 
@@ -32,7 +32,7 @@ Résultat attendu : `StatusCode : 404`
 
 ---
 
-## 3. Grille d'affiches — structure visuelle
+## 3. Grille d'affiches - structure visuelle
 
 Vérification manuelle dans le navigateur :
 - Chaque carte affiche un poster en aspect ratio 2/3 (portrait)
@@ -89,7 +89,7 @@ Vérification manuelle :
 
 ---
 
-## 9. Marquage "Vu" — modal de date
+## 9. Marquage "Vu" - modal de date
 
 Prérequis : connecté.
 

@@ -6,7 +6,7 @@ import { ExplorerGrid } from '@/components/explorer/ExplorerGrid'
 import type { Collection, Pathway, CollectionItem, MediaItem, UserCollectionProgress } from '@/payload-types'
 
 export const metadata: Metadata = {
-  title: 'Découvrir — Collec Club',
+  title: 'Découvrir · Collec Club',
   description: 'Explorez les collections et parcours disponibles sur Collec Club.',
 }
 

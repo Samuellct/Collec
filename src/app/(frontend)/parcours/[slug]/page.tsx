@@ -32,8 +32,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     overrideAccess: true,
   })
   const pathway = result.docs[0]
-  if (!pathway) return { title: 'Parcours introuvable — Collec Club' }
-  return { title: `${pathway.title} — Collec Club` }
+  if (!pathway) return { title: 'Parcours introuvable · Collec Club' }
+  return { title: `${pathway.title} · Collec Club` }
 }
 
 export default async function ParcourPage({ params }: Props) {

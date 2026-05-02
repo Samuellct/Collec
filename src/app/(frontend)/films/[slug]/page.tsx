@@ -73,8 +73,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug: slugParam } = await params
   const payload = await getPayload({ config })
   const mediaItem = await findMediaItem(payload, slugParam)
-  if (!mediaItem) return { title: 'Film introuvable — Collec Club' }
-  return { title: `${mediaItem.title} — Collec Club` }
+  if (!mediaItem) return { title: 'Film introuvable · Collec Club' }
+  return { title: `${mediaItem.title} · Collec Club` }
 }
 
 export default async function FilmPage({ params }: Props) {

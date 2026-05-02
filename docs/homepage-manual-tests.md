@@ -1,4 +1,4 @@
-# Guide de tests manuels — Étape 17 : Page d'accueil
+# Guide de tests manuels - Étape 17 : Page d'accueil
 
 ## Prérequis
 
@@ -14,7 +14,7 @@ Ouvrir le navigateur sur `http://localhost:3000`.
 
 ---
 
-## Test 1 — Hero non-connecté : headline V1
+## Test 1 - Hero non-connecté : headline V1
 
 **Objectif** : la headline principale est affichée pour les visiteurs non connectés.
 
@@ -27,7 +27,7 @@ Ouvrir le navigateur sur `http://localhost:3000`.
 
 ---
 
-## Test 2 — CTAs non-connecté
+## Test 2 - CTAs non-connecté
 
 **Objectif** : les boutons d'action redirigent correctement.
 
@@ -40,7 +40,7 @@ Ouvrir le navigateur sur `http://localhost:3000`.
 
 ---
 
-## Test 3 — Collections visibles (non-connecté)
+## Test 3 - Collections visibles (non-connecté)
 
 **Objectif** : affichage des 6 premières collections publiées.
 
@@ -59,7 +59,7 @@ Ouvrir le navigateur sur `http://localhost:3000`.
 
 ---
 
-## Test 4 — Parcours visibles (non-connecté)
+## Test 4 - Parcours visibles (non-connecté)
 
 **Objectif** : affichage des 3 premiers parcours publiés.
 
@@ -78,7 +78,7 @@ Ouvrir le navigateur sur `http://localhost:3000`.
 
 ---
 
-## Test 5 — Hero connecté : salutation et stats
+## Test 5 - Hero connecté : salutation et stats
 
 **Objectif** : le hero change pour l'utilisateur connecté.
 
@@ -92,7 +92,7 @@ Ouvrir le navigateur sur `http://localhost:3000`.
 
 ---
 
-## Test 6 — Collections en cours (connecté)
+## Test 6 - Collections en cours (connecté)
 
 **Objectif** : section de progression pour les collections démarrées.
 
@@ -112,7 +112,7 @@ Ouvrir le navigateur sur `http://localhost:3000`.
 
 ---
 
-## Test 7 — Vus récemment (connecté)
+## Test 7 - Vus récemment (connecté)
 
 **Objectif** : grille des dernières oeuvres vues.
 
@@ -128,7 +128,7 @@ Ouvrir le navigateur sur `http://localhost:3000`.
 
 ---
 
-## Test 8 — Connecté sans progression
+## Test 8 - Connecté sans progression
 
 **Objectif** : section utilisateur absente si aucune progression.
 
@@ -142,7 +142,7 @@ Ouvrir le navigateur sur `http://localhost:3000`.
 
 ---
 
-## Test 9 — Responsive mobile (360px)
+## Test 9 - Responsive mobile (360px)
 
 **Objectif** : mise en page mobile fonctionnelle.
 
@@ -156,11 +156,11 @@ Ouvrir le navigateur sur `http://localhost:3000`.
 
 ---
 
-## Test 10 — Metadata
+## Test 10 - Metadata
 
 **Objectif** : titre et description corrects pour le SEO.
 
 1. Naviguer vers `http://localhost:3000`.
 2. Vérifier dans les DevTools (onglet Elements → `<head>`) :
-   - `<title>` : "Collec Club — La culture à compléter."
+   - `<title>` : "Collec Club - La culture à compléter."
    - `<meta name="description">` : contient "Construis ta culture film après film."

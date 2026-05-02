@@ -1,4 +1,4 @@
-# Tests manuels — Étape 13 : Page d'un parcours
+# Tests manuels - Étape 13 : Page d'un parcours
 
 Guide de test pour la page `/parcours/[slug]`. Tous les tests sont exécutables dans PowerShell 5.1.
 
@@ -52,7 +52,7 @@ $response404.StatusCode
 
 ---
 
-## 3. Timeline — état des étapes (utilisateur non connecté)
+## 3. Timeline - état des étapes (utilisateur non connecté)
 
 Dans le navigateur, en mode déconnecté :
 - Vérifier que la page est accessible et lisible
@@ -68,7 +68,7 @@ Connecter un compte ayant des étapes partiellement vues.
 
 **Étape complétée :**
 - Dot : fond cuivre + coche blanche
-- Label : "Étape N — Complétée" en couleur subtle
+- Label : "Étape N - Complétée" en couleur subtle
 - Titre : couleur muted
 - Texte éditorial : couleur muted
 - Carte film : badge "Vu" en cuivre
@@ -76,7 +76,7 @@ Connecter un compte ayant des étapes partiellement vues.
 
 **Étape en cours (première non-vue) :**
 - Dot : bordure cuivre + numéro en cuivre, gras
-- Label : "Étape N — En cours" en cuivre
+- Label : "Étape N - En cours" en cuivre
 - Titre : couleur ink normale
 - Bloc éditorial avec bordure gauche 3px cuivre + fond surface-strong
 - Carte film (48px de large, ratio 2/3)
@@ -110,7 +110,7 @@ Cliquer sur "Marquer comme vu" dans l'étape en cours :
 
 ---
 
-## 7. Optimistic update — marquage
+## 7. Optimistic update - marquage
 
 Cliquer "Marquer comme vu" > Confirmer :
 - Instantanément : l'étape passe à l'état "done" (dot cuivre + coche)
@@ -144,7 +144,7 @@ Sur une étape complétée :
 
 ---
 
-## 10. Utilisateur non connecté — prompt au clic "Marquer comme vu"
+## 10. Utilisateur non connecté - prompt au clic "Marquer comme vu"
 
 En mode déconnecté, cliquer le bouton "Marquer comme vu" :
 - Pas de modal de date

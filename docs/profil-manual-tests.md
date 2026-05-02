@@ -1,6 +1,6 @@
-# Tests manuels — Page de profil (`/profil`)
+# Tests manuels - Page de profil (`/profil`)
 
-Étape 15 — Collec Club V1
+Étape 15 - Collec Club V1
 
 ## Pré-requis
 
@@ -16,7 +16,7 @@ L'application est accessible sur `http://localhost:3001`.
 
 ---
 
-## Test 1 — Accès non connecté
+## Test 1 - Accès non connecté
 
 **Objectif** : la page redirige vers `/login` si l'utilisateur n'est pas connecté.
 
@@ -29,7 +29,7 @@ Start-Process "http://localhost:3001/profil"
 
 ---
 
-## Test 2 — Structure de la page connecté
+## Test 2 - Structure de la page connecté
 
 **Objectif** : la page charge correctement avec l'en-tête profil et le layout deux colonnes.
 
@@ -45,7 +45,7 @@ Start-Process "http://localhost:3001/profil"
 
 ---
 
-## Test 3 — Avatar et identité
+## Test 3 - Avatar et identité
 
 **Objectif** : l'avatar affiche la première lettre du pseudo.
 
@@ -57,7 +57,7 @@ Start-Process "http://localhost:3001/profil"
 
 ---
 
-## Test 4 — Statistiques films et séries
+## Test 4 - Statistiques films et séries
 
 **Objectif** : les compteurs se mettent à jour après marquage.
 
@@ -77,7 +77,7 @@ $response.Content | Select-String "Films vus"
 
 ---
 
-## Test 5 — Collection en cours
+## Test 5 - Collection en cours
 
 **Objectif** : une collection partiellement complétée apparaît dans "Collections en cours".
 
@@ -94,7 +94,7 @@ $response.Content | Select-String "Films vus"
 
 ---
 
-## Test 6 — Collection terminée
+## Test 6 - Collection terminée
 
 **Objectif** : une collection 100% complétée bascule dans "Collections terminées".
 
@@ -110,7 +110,7 @@ $response.Content | Select-String "Films vus"
 
 ---
 
-## Test 7 — Parcours en cours et terminé
+## Test 7 - Parcours en cours et terminé
 
 **Objectif** : les parcours suivent la même logique que les collections.
 
@@ -130,7 +130,7 @@ Compléter le parcours :
 
 ---
 
-## Test 8 — Activité récente
+## Test 8 - Activité récente
 
 **Objectif** : la sidebar affiche les actions récentes dans l'ordre chronologique.
 
@@ -149,7 +149,7 @@ Après avoir complété une collection :
 
 ---
 
-## Test 9 — État vide (nouvel utilisateur)
+## Test 9 - État vide (nouvel utilisateur)
 
 **Objectif** : la page gère correctement un utilisateur sans aucune progression.
 
@@ -166,7 +166,7 @@ Après avoir complété une collection :
 
 ---
 
-## Test 10 — Responsive
+## Test 10 - Responsive
 
 **Objectif** : le layout passe en colonne unique sous 800px.
 
@@ -185,7 +185,7 @@ Après avoir complété une collection :
 
 ---
 
-## Test 11 — Vérification des liens
+## Test 11 - Vérification des liens
 
 **Objectif** : chaque carte est un lien fonctionnel.
 
