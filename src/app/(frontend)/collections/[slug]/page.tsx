@@ -32,8 +32,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     overrideAccess: true,
   })
   const collection = result.docs[0]
-  if (!collection) return { title: 'Collection introuvable — Collec Club' }
-  return { title: `${collection.title} — Collec Club` }
+  if (!collection) return { title: 'Collection introuvable · Collec Club' }
+  return { title: `${collection.title} · Collec Club` }
 }
 
 export default async function CollectionPage({ params }: Props) {

@@ -8,7 +8,7 @@ export async function Header() {
   return (
     <header className="border-b border-[var(--line)] px-6 py-4">
       <div className="mx-auto flex max-w-[1080px] items-center justify-between">
-        <Link href="/" aria-label="Collec Club — Accueil">
+        <Link href="/" aria-label="Collec Club, page d'accueil">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 520 150"

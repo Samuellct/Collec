@@ -17,7 +17,7 @@ import type {
 } from '@/payload-types'
 
 export const metadata: Metadata = {
-  title: 'Collec Club — La culture à compléter.',
+  title: 'Collec Club · La culture à compléter.',
   description:
     'Construis ta culture film après film. Complète des collections et suis des parcours éditoriaux sur Collec Club.',
 }

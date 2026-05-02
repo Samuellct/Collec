@@ -248,7 +248,7 @@ export interface MediaType {
 export interface MediaItem {
   id: number;
   /**
-   * Titre FR. Modifiable manuellement — un re-sync TMDB écrasera cette valeur.
+   * Titre FR. Modifiable manuellement - un re-sync TMDB écrasera cette valeur.
    */
   title: string;
   /**
@@ -266,11 +266,11 @@ export interface MediaItem {
    */
   duration?: number | null;
   /**
-   * Synopsis. Modifiable manuellement — un re-sync TMDB écrasera cette valeur.
+   * Synopsis. Modifiable manuellement - un re-sync TMDB écrasera cette valeur.
    */
   synopsis?: string | null;
   /**
-   * URL absolue image.tmdb.org. Modifiable manuellement — un re-sync TMDB écrasera cette valeur.
+   * URL absolue image.tmdb.org. Modifiable manuellement - un re-sync TMDB écrasera cette valeur.
    */
   poster_url?: string | null;
   media_type: number | MediaType;

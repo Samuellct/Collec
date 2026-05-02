@@ -45,7 +45,7 @@ export const MediaItems: CollectionConfig = {
       type: 'text',
       required: true,
       admin: {
-        description: 'Titre FR. Modifiable manuellement — un re-sync TMDB écrasera cette valeur.',
+        description: 'Titre FR. Modifiable manuellement - un re-sync TMDB écrasera cette valeur.',
       },
     },
     {
@@ -97,7 +97,7 @@ export const MediaItems: CollectionConfig = {
       name: 'synopsis',
       type: 'textarea',
       admin: {
-        description: 'Synopsis. Modifiable manuellement — un re-sync TMDB écrasera cette valeur.',
+        description: 'Synopsis. Modifiable manuellement - un re-sync TMDB écrasera cette valeur.',
       },
     },
     {
@@ -105,7 +105,7 @@ export const MediaItems: CollectionConfig = {
       type: 'text',
       admin: {
         description:
-          'URL absolue image.tmdb.org. Modifiable manuellement — un re-sync TMDB écrasera cette valeur.',
+          'URL absolue image.tmdb.org. Modifiable manuellement - un re-sync TMDB écrasera cette valeur.',
       },
     },
     {

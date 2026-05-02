@@ -23,7 +23,7 @@ export function EnChiffres({
         label="Collections démarrées"
       />
       <StatCard
-        value={tauxCompletionMoyen !== null ? `${tauxCompletionMoyen} %` : '—'}
+        value={tauxCompletionMoyen !== null ? `${tauxCompletionMoyen} %` : 'n/a'}
         label="Taux de complétion moyen"
         laiton
       />
