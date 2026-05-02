@@ -1,3 +1,10 @@
+## [0.17.1](https://github.com/Samuellct/Collec/compare/v0.17.0...v0.17.1) (2026-05-02)
+
+
+### Bug Fixes
+
+* remplacer tirets longs interdits dans le code source ([5d96dca](https://github.com/Samuellct/Collec/commit/5d96dca9466fe35a1ee002dd8f164ef087dafb16))
+
 # [0.17.0](https://github.com/Samuellct/Collec/compare/v0.16.0...v0.17.0) (2026-05-02)
 
 
