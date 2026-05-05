@@ -51,15 +51,17 @@ jobs:
           PAYLOAD_SECRET: ci-test-secret-min-32-chars-for-build
 
       - name: Start server
-        run: node .next/standalone/server.js &
-        env:
-          DATABASE_URI: postgresql://collec:collec_test@localhost:5432/collec_test
-          PAYLOAD_SECRET: ci-test-secret-min-32-chars-for-build
-          PORT: 3000
-          HOSTNAME: 0.0.0.0
+        run: |
+          DATABASE_URI=postgresql://collec:collec_test@localhost:5432/collec_test \
+          PAYLOAD_SECRET=ci-test-secret-min-32-chars-for-build \
+          PORT=3000 \
+          HOSTNAME=0.0.0.0 \
+          node .next/standalone/server.js > /tmp/server.log 2>&1 &
+          echo "Server PID: $!"
 
       - name: Wait for server
-        run: npx wait-on http://localhost:3000 --timeout 60000
+        run: |
+          npx wait-on http://localhost:3000 --timeout 60000 || (cat /tmp/server.log && exit 1)
 
       - name: Lighthouse CI
         uses: treosh/lighthouse-ci-action@v12
