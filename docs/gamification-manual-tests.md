@@ -1,5 +1,104 @@
 # Tests manuels — Étape 18 : Gamification et badges
 
+---
+
+## 0. Préparer les icônes de badges
+
+### 0.1 Catalogue des 7 badges V1
+
+Chaque badge correspond à un `condition_type` défini dans la collection `Badges`. Les 7 badges à créer sont :
+
+| Slug | Titre | Description | condition_type |
+|---|---|---|---|
+| `premiere-collection` | Première collection | Tu as complété ta toute première collection. C'est parti. | `first_collection` |
+| `premier-parcours` | Premier parcours | Tu as suivi ton premier parcours éditorial de bout en bout. | `first_pathway` |
+| `dix-vus` | L'habitude commence | 10 œuvres au compteur. Le cinéma devient une routine. | `milestone_10` |
+| `cinquante-vus` | Cinéphile débutant | 50 œuvres vues. Tu sais ce que tu cherches. | `milestone_50` |
+| `cent-vus` | Amateur éclairé | 100 œuvres. Tu navigues dans le cinéma avec aisance. | `milestone_100` |
+| `grande-cinematheque` | Cinéphile confirmé | 250 œuvres vues. Une culture construite film après film. | `milestone_250` |
+| `encyclopediste` | Encyclopédiste | 500 œuvres. Une mémoire du cinéma que peu partagent. | `milestone_500` |
+
+### 0.2 Spécifications des fichiers SVG
+
+**Format :** SVG uniquement. Pas de PNG, pas de WebP.
+
+**ViewBox :** `0 0 80 80`. Taille d'affichage dans l'UI : `48px` (profil) et `32px` (toast).
+
+**Structure recommandée :** un cercle de fond (`r="40"`) + une icône centrée dessinée en traits (`stroke`). Pas de dégradé vif. Pas de filtre CSS. Pas de texte embarqué dans le SVG (le titre est géré par le champ `title` du badge).
+
+**Palette par catégorie :**
+
+Trois familles de couleurs, chacune dérivée de la charte sans s'en écarter.
+
+| Catégorie | Fond doux | Stroke du cercle | Stroke de l'icône |
+|---|---|---|---|
+| **Collections** | `#ECF2ED` | Vert sauge `#4E7A5A` | `#1A1C1E` |
+| **Parcours** | `#EAEEF3` | Bleu ardoise `#4A6B8C` | `#1A1C1E` |
+| **Films — 10** | `#F9EDE7` | Cuivre `#B85C38` | `#B85C38` |
+| **Films — 50** | `#F9EEE3` | Cuivre orangé `#B86838` | `#B86838` |
+| **Films — 100** | `#F8EFE0` | Ambre `#B58040` | `#B58040` |
+| **Films — 250** | `#F6EFD8` | Laiton `#B5964D` | `#B5964D` |
+| **Films — 500** | `#F5EDD0` | Doré `#B8A450` | `#B8A450` |
+
+Le vert sauge et le bleu ardoise sont des teintes dessaturées, dans les mêmes valeurs de luminosité que le cuivre et le laiton. Ils s'intègrent sans rupture sur le fond `#F4EFE6`. Les badges films suivent une progression chromatique continue : le rouge-cuivre du premier jalon vire progressivement vers le doré du dernier.
+
+`stroke-width` entre `1.8` et `2.2` sur toutes les icônes. Pas de `fill` sur les icônes (traits uniquement).
+
+**Attribution des couleurs par badge :**
+
+| Slug | Fond | Stroke cercle | Stroke icône |
+|---|---|---|---|
+| `premiere-collection` | `#ECF2ED` | `#4E7A5A` | `#1A1C1E` |
+| `premier-parcours` | `#EAEEF3` | `#4A6B8C` | `#1A1C1E` |
+| `dix-vus` | `#F9EDE7` | `#B85C38` | `#B85C38` |
+| `cinquante-vus` | `#F9EEE3` | `#B86838` | `#B86838` |
+| `cent-vus` | `#F8EFE0` | `#B58040` | `#B58040` |
+| `grande-cinematheque` | `#F6EFD8` | `#B5964D` | `#B5964D` |
+| `encyclopediste` | `#F5EDD0` | `#B8A450` | `#B8A450` |
+
+**Motifs d'icônes suggérés (à dessiner en SVG) :**
+
+| Slug | Motif |
+|---|---|
+| `premiere-collection` | Étagère minimaliste (3 livres verticaux) |
+| `premier-parcours` | Flèche courbe vers la droite |
+| `dix-vus` | Chiffre `10` en Fraunces, ou pellicule à 10 cases |
+| `cinquante-vus` | Pellicule de cinéma (bobine vue de dessus) |
+| `cent-vus` | Étoile à 5 branches (trait, pas remplie) |
+| `grande-cinematheque` | Colonnade minimaliste (3 colonnes) |
+| `encyclopediste` | Couronne ouverte (3 pointes) |
+
+### 0.3 Où déposer les fichiers
+
+```
+03_Developpement/
+  public/
+    badges/
+      premiere-collection.svg
+      premier-parcours.svg
+      dix-vus.svg
+      cinquante-vus.svg
+      cent-vus.svg
+      grande-cinematheque.svg
+      encyclopediste.svg
+```
+
+Le dossier `public/` de Next.js est servi statiquement à la racine. Un fichier déposé dans `public/badges/foo.svg` est accessible via `http://localhost:3000/badges/foo.svg`.
+
+### 0.4 Comment renseigner l'icône dans l'admin
+
+Dans `/admin` > **Gamification** > **Badges** > ouvrir un badge > champ **icon_url** :
+
+Saisir le chemin public sans le domaine, par exemple :
+
+```
+/badges/premiere-collection.svg
+```
+
+L'UI lit ce champ via le composant `<BadgeIcon>` et affiche le SVG dans une balise `<img>`. Si le champ est vide, un trophée par défaut est affiché.
+
+---
+
 ## Prérequis
 
 - Docker en cours d'exécution : `docker compose up -d`
@@ -16,14 +115,17 @@
 
 Dans l'admin (`/admin`) > section **Gamification** > **Badges** :
 
-Créer les badges suivants (un par un) :
+Créer les badges suivants (un par un). Les slugs, titres et descriptions sont définis en section 0.1. Le champ `icon_url` doit pointer vers `/badges/[slug].svg` (voir section 0.3).
 
-| Slug | Titre | condition_type |
-|---|---|---|
-| `premiere-collection` | Première collection | `first_collection` |
-| `premier-parcours` | Premier parcours | `first_pathway` |
-| `10-oeuvres` | Cinéphile débutant | `milestone_10` |
-| `50-oeuvres` | Cinéphile confirmé | `milestone_50` |
+| Slug | Titre | condition_type | icon_url |
+|---|---|---|---|
+| `premiere-collection` | Première collection | `first_collection` | `/badges/premiere-collection.svg` |
+| `premier-parcours` | Premier parcours | `first_pathway` | `/badges/premier-parcours.svg` |
+| `dix-vus` | L'habitude commence | `milestone_10` | `/badges/dix-vus.svg` |
+| `cinquante-vus` | Cinéphile débutant | `milestone_50` | `/badges/cinquante-vus.svg` |
+| `cent-vus` | Amateur éclairé | `milestone_100` | `/badges/cent-vus.svg` |
+| `grande-cinematheque` | Cinéphile confirmé | `milestone_250` | `/badges/grande-cinematheque.svg` |
+| `encyclopediste` | Encyclopédiste | `milestone_500` | `/badges/encyclopediste.svg` |
 
 **Vérifications :**
 - [ ] Le champ `slug` est en lecture seule (readOnly) — impossible de le modifier après création
