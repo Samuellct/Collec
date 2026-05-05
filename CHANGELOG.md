@@ -1,3 +1,14 @@
+## [0.17.2](https://github.com/Samuellct/Collec/compare/v0.17.1...v0.17.2) (2026-05-05)
+
+
+### Bug Fixes
+
+* **ci:** capture server logs to diagnose startup crash ([b266e7d](https://github.com/Samuellct/Collec/commit/b266e7dd059e80ac78d38fa69a595e859dda0879))
+* **ci:** use standalone server for Lighthouse CI ([e395184](https://github.com/Samuellct/Collec/commit/e395184d262ec52591b5db1f35fc0195656d588d))
+* **migrations:** add linked_pathway_id to collections, register all migrations ([437a010](https://github.com/Samuellct/Collec/commit/437a0100490183dd47f7085f1ec88838ef37bd3a))
+* **migrations:** add pathways and pathway_steps tables to progression migration ([8b536da](https://github.com/Samuellct/Collec/commit/8b536daaa503d07ba58500a134a61f592c9ccb8a))
+* **migrations:** remove gamification migration from fix branch index ([7df811e](https://github.com/Samuellct/Collec/commit/7df811efd231e2114b07f819699af87e86933307))
+
 ## [0.17.1](https://github.com/Samuellct/Collec/compare/v0.17.0...v0.17.1) (2026-05-02)
 
 
