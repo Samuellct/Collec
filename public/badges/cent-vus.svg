@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+  <!-- Fond ambre doux -->
+  <circle cx="40" cy="40" r="38" fill="#F8EFE0" stroke="#B58040" stroke-width="2.2"/>
+  <!-- Étoile à 5 branches — rayon ext. 18, rayon int. 7.5, pointe haute -->
+  <path d="M 40,22 L 44.4,33.9 L 57.1,34.4 L 47.1,42.3 L 50.6,54.6 L 40,47.5 L 29.4,54.6 L 32.9,42.3 L 22.9,34.4 L 35.6,33.9 Z" fill="none" stroke="#B58040" stroke-width="2" stroke-linejoin="round"/>
+</svg>
