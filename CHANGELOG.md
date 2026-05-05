@@ -1,3 +1,22 @@
+# [0.18.0](https://github.com/Samuellct/Collec/compare/v0.17.2...v0.18.0) (2026-05-05)
+
+
+### Bug Fixes
+
+* **gamification:** correct migration consolidation and slug field access control ([90816d0](https://github.com/Samuellct/Collec/commit/90816d0819e0b38002aa01d26bbec6f8909def89))
+* **gamification:** use next/image and fix useCallback deps in badge components ([2189f0b](https://github.com/Samuellct/Collec/commit/2189f0ba549b1ed47c4a99be7b5663bd35937afd))
+* **migrations:** add linked_pathway_id to collections, register all migrations ([8cd3c8d](https://github.com/Samuellct/Collec/commit/8cd3c8d77eb75e347030545611026238ba789440))
+
+
+### Features
+
+* **gamification:** add badge SVG icons ([e92b3e8](https://github.com/Samuellct/Collec/commit/e92b3e829d235f73645004724deddf88ef73f74e))
+* **gamification:** add badge toast notification ([6e21de3](https://github.com/Samuellct/Collec/commit/6e21de385f2417af65a257de14550fc8a593d460))
+* **gamification:** add Badges collection ([af7d3aa](https://github.com/Samuellct/Collec/commit/af7d3aa85df24557e09fc581a70c15126d660924))
+* **gamification:** add UserBadges collection ([06224d6](https://github.com/Samuellct/Collec/commit/06224d6197d8b9d3e79baf09f789cc0f62f180a2))
+* **gamification:** display badges on profile page ([db6534a](https://github.com/Samuellct/Collec/commit/db6534a07fb3d2f24dd76d42b9ad7084e5bf6825))
+* **gamification:** implement badge attribution logic ([7274429](https://github.com/Samuellct/Collec/commit/7274429fe00925892929fc9453e0b77cc97ccc18))
+
 ## [0.17.2](https://github.com/Samuellct/Collec/compare/v0.17.1...v0.17.2) (2026-05-05)
 
 
