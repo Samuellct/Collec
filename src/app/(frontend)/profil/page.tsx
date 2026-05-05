@@ -10,6 +10,7 @@ import { PathwayCard } from '@/components/profile/PathwayCard'
 import { RecentActivityList } from '@/components/profile/RecentActivityList'
 import type { ActivityItem } from '@/components/profile/RecentActivityList'
 import { EnChiffres } from '@/components/profile/EnChiffres'
+import { BadgeGrid } from '@/components/gamification/BadgeGrid'
 import type {
   MediaType,
   MediaItem,
@@ -18,6 +19,8 @@ import type {
   UserWatchedItem,
   UserCollectionProgress,
   UserPathwayProgress,
+  Badge,
+  UserBadge,
 } from '@/payload-types'
 
 type PopulatedWatchedItem = Omit<UserWatchedItem, 'media_item'> & {
@@ -29,6 +32,7 @@ type PopulatedCollectionProgress = Omit<UserCollectionProgress, 'collection'> & 
 type PopulatedPathwayProgress = Omit<UserPathwayProgress, 'pathway'> & {
   pathway: Pathway
 }
+type PopulatedUserBadge = Omit<UserBadge, 'badge'> & { badge: Badge }
 
 function formatMemberSince(dateStr: string): string {
   return new Intl.DateTimeFormat('fr-FR', { month: 'long', year: 'numeric' }).format(
@@ -57,32 +61,42 @@ export default async function ProfilPage() {
 
   const payload = await getPayload({ config })
 
-  const [watchedResult, collectionProgressResult, pathwayProgressResult] = await Promise.all([
-    payload.find({
-      collection: 'user-watched-items',
-      where: { user: { equals: user.id } },
-      depth: 2,
-      sort: '-watched_at',
-      limit: 200,
-      overrideAccess: true,
-    }),
-    payload.find({
-      collection: 'user-collection-progress',
-      where: { user: { equals: user.id } },
-      depth: 1,
-      overrideAccess: true,
-    }),
-    payload.find({
-      collection: 'user-pathway-progress',
-      where: { user: { equals: user.id } },
-      depth: 1,
-      overrideAccess: true,
-    }),
-  ])
+  const [watchedResult, collectionProgressResult, pathwayProgressResult, userBadgesResult] =
+    await Promise.all([
+      payload.find({
+        collection: 'user-watched-items',
+        where: { user: { equals: user.id } },
+        depth: 2,
+        sort: '-watched_at',
+        limit: 200,
+        overrideAccess: true,
+      }),
+      payload.find({
+        collection: 'user-collection-progress',
+        where: { user: { equals: user.id } },
+        depth: 1,
+        overrideAccess: true,
+      }),
+      payload.find({
+        collection: 'user-pathway-progress',
+        where: { user: { equals: user.id } },
+        depth: 1,
+        overrideAccess: true,
+      }),
+      payload.find({
+        collection: 'user-badges',
+        where: { user: { equals: user.id } },
+        depth: 1,
+        sort: '-earned_at',
+        limit: 50,
+        overrideAccess: true,
+      }),
+    ])
 
   const watchedItems = watchedResult.docs as PopulatedWatchedItem[]
   const collectionProgress = collectionProgressResult.docs as PopulatedCollectionProgress[]
   const pathwayProgress = pathwayProgressResult.docs as PopulatedPathwayProgress[]
+  const userBadges = userBadgesResult.docs as PopulatedUserBadge[]
 
   const filmsVus = watchedItems.filter((w) => w.media_item.media_type.slug === 'film').length
   const seriesVues = watchedItems.filter((w) => w.media_item.media_type.slug === 'series').length
@@ -296,6 +310,12 @@ export default async function ProfilPage() {
           />
         </section>
       )}
+
+      {/* Mes badges */}
+      <section className="border-t pb-12 pt-8" style={{ borderColor: 'var(--line)' }}>
+        <SectionTitle>Mes badges</SectionTitle>
+        <BadgeGrid userBadges={userBadges} />
+      </section>
     </main>
   )
 }

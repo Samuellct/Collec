@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80">
+  <!-- Fond vert sauge doux -->
+  <circle cx="40" cy="40" r="38" fill="#ECF2ED" stroke="#4E7A5A" stroke-width="2.2"/>
+  <!-- Étagère -->
+  <line x1="25" y1="53" x2="55" y2="53" stroke="#1A1C1E" stroke-width="2" stroke-linecap="round"/>
+  <!-- Livre 1 — gauche, hauteur moyenne -->
+  <rect x="26" y="35" width="7" height="18" rx="1" fill="none" stroke="#1A1C1E" stroke-width="2"/>
+  <!-- Livre 2 — centre, court et épais -->
+  <rect x="35" y="39" width="9" height="14" rx="1" fill="none" stroke="#1A1C1E" stroke-width="2"/>
+  <!-- Livre 3 — droite, le plus grand -->
+  <rect x="46" y="31" width="7" height="22" rx="1" fill="none" stroke="#1A1C1E" stroke-width="2"/>
+</svg>

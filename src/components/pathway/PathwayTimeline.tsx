@@ -1,8 +1,10 @@
 'use client'
 
-import { useOptimistic, useTransition, useState } from 'react'
+import { useOptimistic, useTransition, useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { PathwayStepCard } from './PathwayStepCard'
+import { BadgeToast } from '@/components/gamification/BadgeToast'
+import type { EarnedBadge } from '@/components/gamification/BadgeToast'
 import type { PathwayStep, MediaItem } from '@/payload-types'
 
 type PopulatedPathwayStep = PathwayStep & { media_item: MediaItem }
@@ -25,14 +27,30 @@ export function PathwayTimeline({
   isAuthenticated,
 }: PathwayTimelineProps) {
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
-  const [, startTransition] = useTransition()
+  const [earnedBadges, setEarnedBadges] = useState<EarnedBadge[]>([])
+  const lastMarkTimestampRef = useRef<string | null>(null)
+  const [isPending, startTransition] = useTransition()
   const [optimisticWatched, updateOptimistic] = useOptimistic(
     watchedMap,
     (_: Record<number, number>, next: Record<number, number>) => next,
   )
 
+  useEffect(() => {
+    if (!isPending && lastMarkTimestampRef.current) {
+      const since = lastMarkTimestampRef.current
+      lastMarkTimestampRef.current = null
+      fetch(`/api/badges/recent?since=${encodeURIComponent(since)}`)
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data: { badges: EarnedBadge[] } | null) => {
+          if (data?.badges?.length) setEarnedBadges(data.badges)
+        })
+        .catch(() => {})
+    }
+  }, [isPending])
+
   function handleMarkWatched(mediaItemId: number, watchedAt: string) {
     const next = { ...optimisticWatched, [mediaItemId]: -1 }
+    lastMarkTimestampRef.current = new Date().toISOString()
     startTransition(async () => {
       updateOptimistic(next)
       await markWatched(mediaItemId, watchedAt, pathwaySlug)
@@ -62,6 +80,10 @@ export function PathwayTimeline({
 
   return (
     <div>
+      {earnedBadges.length > 0 && (
+        <BadgeToast badges={earnedBadges} onDismiss={() => setEarnedBadges([])} />
+      )}
+
       {steps.map((step, index) => (
         <PathwayStepCard
           key={step.id}

@@ -1,4 +1,5 @@
 import type { PayloadRequest } from 'payload'
+import { checkAndAwardBadges } from '../../gamification/hooks/award-badges.ts'
 
 export async function recalculateForUserAndMedia(
   req: PayloadRequest,
@@ -21,6 +22,7 @@ export async function recalculateForUserAndMedia(
 
   await recalculateCollections(req, userId, mediaItemId, watchedIds)
   await recalculatePathways(req, userId, mediaItemId, watchedIds)
+  await checkAndAwardBadges(req.payload, userId).catch(() => {})
 }
 
 async function recalculateCollections(

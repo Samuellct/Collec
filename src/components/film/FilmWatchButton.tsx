@@ -1,7 +1,9 @@
 'use client'
 
-import { useOptimistic, useTransition, useState } from 'react'
+import { useOptimistic, useTransition, useState, useEffect, useRef } from 'react'
 import { DatePickerModal } from '@/components/collection/DatePickerModal'
+import { BadgeToast } from '@/components/gamification/BadgeToast'
+import type { EarnedBadge } from '@/components/gamification/BadgeToast'
 
 interface FilmWatchButtonProps {
   mediaItemId: number
@@ -20,11 +22,26 @@ export function FilmWatchButton({
 }: FilmWatchButtonProps) {
   const [showModal, setShowModal] = useState(false)
   const [showLoginPrompt, setShowLoginPrompt] = useState(false)
-  const [, startTransition] = useTransition()
+  const [earnedBadges, setEarnedBadges] = useState<EarnedBadge[]>([])
+  const lastMarkTimestampRef = useRef<string | null>(null)
+  const [isPending, startTransition] = useTransition()
   const [optimisticId, updateOptimistic] = useOptimistic(
     initialWatchedItemId,
     (_: number | null, next: number | null) => next,
   )
+
+  useEffect(() => {
+    if (!isPending && lastMarkTimestampRef.current) {
+      const since = lastMarkTimestampRef.current
+      lastMarkTimestampRef.current = null
+      fetch(`/api/badges/recent?since=${encodeURIComponent(since)}`)
+        .then((r) => (r.ok ? r.json() : null))
+        .then((data: { badges: EarnedBadge[] } | null) => {
+          if (data?.badges?.length) setEarnedBadges(data.badges)
+        })
+        .catch(() => {})
+    }
+  }, [isPending])
 
   function handleClickMark() {
     if (!isAuthenticated) {
@@ -36,6 +53,7 @@ export function FilmWatchButton({
 
   function handleConfirmDate(watchedAt: string) {
     setShowModal(false)
+    lastMarkTimestampRef.current = new Date().toISOString()
     startTransition(async () => {
       updateOptimistic(-1)
       await onMarkWatched(mediaItemId, watchedAt)
@@ -44,6 +62,7 @@ export function FilmWatchButton({
 
   function handleCloseModal() {
     setShowModal(false)
+    lastMarkTimestampRef.current = new Date().toISOString()
     startTransition(async () => {
       updateOptimistic(-1)
       await onMarkWatched(mediaItemId, new Date().toISOString())
@@ -63,6 +82,9 @@ export function FilmWatchButton({
 
   return (
     <div className="flex flex-col gap-2">
+      {earnedBadges.length > 0 && (
+        <BadgeToast badges={earnedBadges} onDismiss={() => setEarnedBadges([])} />
+      )}
       {isWatched ? (
         <button
           onClick={handleRemove}
