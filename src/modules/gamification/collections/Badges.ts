@@ -20,9 +20,11 @@ export const Badges: CollectionConfig = {
       type: 'text',
       required: true,
       unique: true,
+      access: {
+        update: () => false,
+      },
       admin: {
         description: 'Identifiant stable, ne pas modifier après création.',
-        readOnly: true,
       },
     },
     {
