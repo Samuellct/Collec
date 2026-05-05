@@ -51,11 +51,12 @@ jobs:
           PAYLOAD_SECRET: ci-test-secret-min-32-chars-for-build
 
       - name: Start server
-        run: pnpm start &
+        run: node .next/standalone/server.js &
         env:
           DATABASE_URI: postgresql://collec:collec_test@localhost:5432/collec_test
           PAYLOAD_SECRET: ci-test-secret-min-32-chars-for-build
           PORT: 3000
+          HOSTNAME: 0.0.0.0
 
       - name: Wait for server
         run: npx wait-on http://localhost:3000 --timeout 60000
