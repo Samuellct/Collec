@@ -1,9 +1,48 @@
-import config from '../payload.config.ts'
-import { getPayload } from 'payload'
+import { readFileSync } from 'fs'
+import { resolve } from 'path'
+import pg from 'pg'
 import { fetchMovieDetail, fetchTvDetail } from '../modules/media-items/tmdb/fetch-detail.ts'
 import { normalizeMovie, normalizeTv } from '../modules/media-items/tmdb/normalize.ts'
 import { tmdbFetch } from '../modules/media-items/tmdb/client.ts'
 import type { CollectionTypeValue, AccessibilityLevelValue } from '../modules/collections/constants.ts'
+
+// ---------------------------------------------------------------------------
+// Env loader (same pattern as seed:media-types)
+// ---------------------------------------------------------------------------
+
+function loadEnv() {
+  const envPath = resolve(process.cwd(), '.env.local')
+  try {
+    const content = readFileSync(envPath, 'utf8')
+    for (const line of content.split('\n')) {
+      const trimmed = line.trim()
+      if (!trimmed || trimmed.startsWith('#')) continue
+      const eqIdx = trimmed.indexOf('=')
+      if (eqIdx === -1) continue
+      const key = trimmed.slice(0, eqIdx).trim()
+      const value = trimmed.slice(eqIdx + 1).trim()
+      if (!process.env[key]) process.env[key] = value
+    }
+  } catch {
+    // .env.local absent : utiliser les variables d'environnement existantes
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Slug helper (copied from MediaItems collection)
+// ---------------------------------------------------------------------------
+
+const COMBINING_DIACRITICS = /\p{M}/gu
+
+function toSlug(title: string, year?: number | null): string {
+  const base = title
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(COMBINING_DIACRITICS, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+  return year ? `${base}-${year}` : base
+}
 
 // ---------------------------------------------------------------------------
 // Types
@@ -294,7 +333,7 @@ const COLLECTIONS: CollectionDef[] = [
     title: 'Mission Impossible',
     type: 'saga',
     accessibility_level: 'accessible',
-    short_description: 'Les 8 films Mission Impossible avec Tom Cruise, dans l\'ordre chronologique.',
+    short_description: "Les 8 films Mission Impossible avec Tom Cruise, dans l'ordre chronologique.",
     is_open: false,
     display_order: 9,
     items: [
@@ -443,7 +482,7 @@ const COLLECTIONS: CollectionDef[] = [
       { title: 'Eternity and a Day', year: 1998, mediaType: 'movie' },
       { title: 'Rosetta', year: 1999, mediaType: 'movie' },
       { title: 'Dancer in the Dark', year: 2000, mediaType: 'movie' },
-      { title: 'The Son\'s Room', year: 2001, mediaType: 'movie' },
+      { title: "The Son's Room", year: 2001, mediaType: 'movie' },
       { title: 'The Pianist', year: 2002, mediaType: 'movie' },
       { title: 'Elephant', year: 2003, mediaType: 'movie' },
       { title: 'Fahrenheit 9/11', year: 2004, mediaType: 'movie' },
@@ -732,10 +771,8 @@ async function findTmdbId(
   }
 }
 
-type PayloadInstance = Awaited<ReturnType<typeof getPayload>>
-
 async function upsertMediaItem(
-  payload: PayloadInstance,
+  client: pg.Client,
   tmdbId: number,
   mediaType: MediaType,
   filmTypeId: number,
@@ -744,84 +781,53 @@ async function upsertMediaItem(
   try {
     const mediaTypeId = mediaType === 'movie' ? filmTypeId : seriesTypeId
 
-    // Check existing
-    const existing = await payload.find({
-      collection: 'media-items',
-      where: {
-        and: [
-          { tmdb_id: { equals: tmdbId } },
-          { media_type: { equals: mediaTypeId } },
-        ],
-      },
-      limit: 1,
-    })
+    const existing = await client.query<{ id: number }>(
+      'SELECT id FROM media_items WHERE tmdb_id = $1 AND media_type_id = $2',
+      [tmdbId, mediaTypeId],
+    )
 
     const detail = mediaType === 'movie'
       ? await fetchMovieDetail(tmdbId)
       : await fetchTvDetail(tmdbId)
-    const normalized = mediaType === 'movie'
+    const n = mediaType === 'movie'
       ? normalizeMovie(detail as Parameters<typeof normalizeMovie>[0])
       : normalizeTv(detail as Parameters<typeof normalizeTv>[0])
 
-    const data = { ...normalized, media_type: mediaTypeId }
-
-    let docId: number
-
-    if (existing.docs.length > 0) {
-      const existingId = existing.docs[0]!.id as number
-      await payload.update({
-        collection: 'media-items',
-        id: existingId,
-        data,
-      })
-      docId = existingId
-    } else {
-      const created = await payload.create({
-        collection: 'media-items',
-        data,
-      })
-      docId = created.id as number
-    }
-
-    // Upsert TMDB external ID
-    const existingExtId = await payload.find({
-      collection: 'external-ids',
-      where: {
-        and: [
-          { provider: { equals: 'tmdb' } },
-          { external_id: { equals: String(tmdbId) } },
+    if (existing.rows.length > 0) {
+      const id = existing.rows[0]!.id
+      await client.query(
+        `UPDATE media_items SET
+          title=$1, original_title=$2, year=$3, release_date=$4, duration=$5,
+          synopsis=$6, poster_url=$7, imdb_id=$8, director=$9, cast=$10,
+          source_of_truth=$11, source_last_synced_at=$12, source_expires_at=$13,
+          updated_at=NOW()
+        WHERE id=$14`,
+        [
+          n.title, n.original_title, n.year, n.release_date, n.duration,
+          n.synopsis, n.poster_url, n.imdb_id, n.director, n.cast,
+          n.source_of_truth, n.source_last_synced_at, n.source_expires_at,
+          id,
         ],
-      },
-      limit: 1,
-    })
-    if (existingExtId.docs.length === 0) {
-      await payload.create({
-        collection: 'external-ids',
-        data: { media_item: docId, provider: 'tmdb', external_id: String(tmdbId) },
-      })
+      )
+      return id
+    } else {
+      const slug = toSlug(n.title, n.year)
+      const res = await client.query<{ id: number }>(
+        `INSERT INTO media_items
+          (title, slug, original_title, year, release_date, duration, synopsis,
+           poster_url, media_type_id, tmdb_id, imdb_id, director, cast,
+           source_of_truth, source_last_synced_at, source_expires_at, updated_at, created_at)
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,NOW(),NOW())
+        ON CONFLICT (slug) DO UPDATE SET slug = EXCLUDED.slug || '-' || $10
+        RETURNING id`,
+        [
+          n.title, slug, n.original_title, n.year, n.release_date, n.duration,
+          n.synopsis, n.poster_url, mediaTypeId, n.tmdb_id, n.imdb_id,
+          n.director, n.cast, n.source_of_truth, n.source_last_synced_at, n.source_expires_at,
+        ],
+      )
+      return res.rows[0]!.id
     }
-
-    // Upsert IMDb external ID if available
-    if (normalized.imdb_id) {
-      const existingImdb = await payload.find({
-        collection: 'external-ids',
-        where: {
-          and: [
-            { provider: { equals: 'imdb' } },
-            { external_id: { equals: normalized.imdb_id } },
-          ],
-        },
-        limit: 1,
-      })
-      if (existingImdb.docs.length === 0) {
-        await payload.create({
-          collection: 'external-ids',
-          data: { media_item: docId, provider: 'imdb', external_id: normalized.imdb_id },
-        })
-      }
-    }
-
-    return docId
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
     console.error(`  [ERROR] upsertMediaItem tmdbId=${tmdbId}: ${msg}`)
@@ -834,130 +840,106 @@ async function upsertMediaItem(
 // ---------------------------------------------------------------------------
 
 async function run() {
-  const payload = await getPayload({ config })
+  loadEnv()
 
-  // Get media-type IDs
-  const filmTypeResult = await payload.find({
-    collection: 'media-types',
-    where: { slug: { equals: 'film' } },
-    limit: 1,
-  })
-  const seriesTypeResult = await payload.find({
-    collection: 'media-types',
-    where: { slug: { equals: 'series' } },
-    limit: 1,
-  })
+  const connectionString = process.env.DATABASE_URI
+  if (!connectionString) throw new Error('DATABASE_URI is not set')
 
-  if (!filmTypeResult.docs[0] || !seriesTypeResult.docs[0]) {
-    throw new Error("media-types 'film' or 'series' not found. Run seed:media-types first.")
-  }
+  const client = new pg.Client({ connectionString })
+  await client.connect()
 
-  const filmTypeId = filmTypeResult.docs[0].id as number
-  const seriesTypeId = seriesTypeResult.docs[0].id as number
-
-  console.log(`Media types: film=${filmTypeId}, series=${seriesTypeId}`)
-
-  for (const collectionDef of COLLECTIONS) {
-    console.log(`\n=== ${collectionDef.title} ===`)
-
-    // Find or create collection
-    const existingCollection = await payload.find({
-      collection: 'collections',
-      where: { slug: { equals: collectionDef.slug } },
-      limit: 1,
-    })
-
-    let collectionId: number
-    const collectionData = {
-      slug: collectionDef.slug,
-      title: collectionDef.title,
-      type: collectionDef.type,
-      accessibility_level: collectionDef.accessibility_level,
-      short_description: collectionDef.short_description,
-      ...(collectionDef.editorial_note ? { editorial_note: collectionDef.editorial_note } : {}),
-      is_open: collectionDef.is_open,
-      is_published: true,
-      display_order: collectionDef.display_order,
+  try {
+    // Get media-type IDs
+    const filmRes = await client.query<{ id: number }>(
+      "SELECT id FROM media_types WHERE slug = 'film'",
+    )
+    const seriesRes = await client.query<{ id: number }>(
+      "SELECT id FROM media_types WHERE slug = 'series'",
+    )
+    if (!filmRes.rows[0] || !seriesRes.rows[0]) {
+      throw new Error("media-types 'film' or 'series' not found. Run seed:media-types first.")
     }
+    const filmTypeId = filmRes.rows[0].id
+    const seriesTypeId = seriesRes.rows[0].id
+    console.log(`Media types: film=${filmTypeId}, series=${seriesTypeId}`)
 
-    if (existingCollection.docs.length > 0) {
-      const existingId = existingCollection.docs[0]!.id as number
-      await payload.update({
-        collection: 'collections',
-        id: existingId,
-        data: collectionData,
-      })
-      collectionId = existingId
-      console.log(`  Collection updated (id=${collectionId})`)
-    } else {
-      const created = await payload.create({
-        collection: 'collections',
-        data: collectionData,
-      })
-      collectionId = created.id as number
-      console.log(`  Collection created (id=${collectionId})`)
-    }
+    for (const col of COLLECTIONS) {
+      console.log(`\n=== ${col.title} ===`)
 
-    // Process items
-    let successCount = 0
-    let skipCount = 0
-    let errorCount = 0
+      // Upsert collection
+      const colRes = await client.query<{ id: number }>(
+        `INSERT INTO collections
+          (slug, title, short_description, editorial_note, type, accessibility_level,
+           is_open, is_published, display_order, updated_at, created_at)
+        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,NOW(),NOW())
+        ON CONFLICT (slug) DO UPDATE SET
+          title=$2, short_description=$3, editorial_note=$4, type=$5,
+          accessibility_level=$6, is_open=$7, is_published=$8, display_order=$9,
+          updated_at=NOW()
+        RETURNING id`,
+        [
+          col.slug, col.title, col.short_description, col.editorial_note ?? null,
+          col.type, col.accessibility_level, col.is_open, true, col.display_order,
+        ],
+      )
+      const collectionId = colRes.rows[0]!.id
+      console.log(`  Collection id=${collectionId}`)
 
-    for (const item of collectionDef.items) {
-      await sleep(150)
+      let added = 0, skipped = 0, errors = 0
 
-      // Resolve TMDB ID
-      let tmdbId = item.tmdbId
-      if (!tmdbId) {
-        tmdbId = (await findTmdbId(item.title, item.year, item.mediaType)) ?? undefined
+      for (const item of col.items) {
+        await sleep(150)
+
+        // Resolve TMDB ID
+        let tmdbId = item.tmdbId
         if (!tmdbId) {
-          console.warn(`  [SKIP] "${item.title}" (${item.year}) — not found on TMDB`)
-          errorCount++
+          await sleep(150)
+          tmdbId = (await findTmdbId(item.title, item.year, item.mediaType)) ?? undefined
+          if (!tmdbId) {
+            console.warn(`  [SKIP] "${item.title}" (${item.year}) — not found on TMDB`)
+            errors++
+            continue
+          }
+        }
+
+        // Upsert media item
+        const mediaItemId = await upsertMediaItem(client, tmdbId, item.mediaType, filmTypeId, seriesTypeId)
+        if (!mediaItemId) {
+          errors++
           continue
         }
+
+        // Upsert external IDs
+        await client.query(
+          `INSERT INTO external_ids (media_item_id, provider, external_id, updated_at, created_at)
+          VALUES ($1,'tmdb',$2,NOW(),NOW())
+          ON CONFLICT (provider, external_id) DO NOTHING`,
+          [mediaItemId, String(tmdbId)],
+        )
+
+        // Link to collection (skip if already linked)
+        const linkRes = await client.query(
+          `INSERT INTO collection_items (collection_id, media_item_id, updated_at, created_at)
+          VALUES ($1,$2,NOW(),NOW())
+          ON CONFLICT (collection_id, media_item_id) DO NOTHING`,
+          [collectionId, mediaItemId],
+        )
+        if ((linkRes.rowCount ?? 0) > 0) {
+          added++
+        } else {
+          skipped++
+        }
+
+        process.stdout.write('.')
       }
 
-      // Upsert media item
-      await sleep(150)
-      const mediaItemId = await upsertMediaItem(payload, tmdbId, item.mediaType, filmTypeId, seriesTypeId)
-      if (!mediaItemId) {
-        errorCount++
-        continue
-      }
-
-      // Check if collection-item link already exists
-      const existingLink = await payload.find({
-        collection: 'collection-items',
-        where: {
-          and: [
-            { collection: { equals: collectionId as unknown as string } },
-            { media_item: { equals: mediaItemId as unknown as string } },
-          ],
-        },
-        limit: 1,
-      })
-
-      if (existingLink.docs.length > 0) {
-        skipCount++
-      } else {
-        await payload.create({
-          collection: 'collection-items',
-          data: {
-            collection: collectionId as unknown as number,
-            media_item: mediaItemId as unknown as number,
-          },
-        })
-        successCount++
-      }
-
-      process.stdout.write('.')
+      console.log(`\n  Done: ${added} added, ${skipped} already linked, ${errors} errors`)
     }
 
-    console.log(`\n  Done: ${successCount} added, ${skipCount} skipped, ${errorCount} errors`)
+    console.log('\n\nSeed complete.')
+  } finally {
+    await client.end()
   }
-
-  console.log('\n\nSeed complete.')
-  process.exit(0)
 }
 
 run().catch((err) => {
