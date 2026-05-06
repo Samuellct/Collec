@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { kalam, fraunces, sourceSerif4, sourceSans3 } from '@/lib/fonts'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
+import { Analytics } from '@/components/analytics/Analytics'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -26,6 +27,7 @@ export default function FrontendLayout({
           {children}
         </main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   )
