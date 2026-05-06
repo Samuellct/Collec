@@ -77,6 +77,7 @@ export function PosterGrid({
   function handleMarkWatched(mediaItemId: number, watchedAt: string) {
     const next = { ...optimisticWatched, [mediaItemId]: -1 }
     lastMarkTimestampRef.current = new Date().toISOString()
+    window.umami?.track('item_mark', { context: 'collection', slug: collectionSlug })
     startTransition(async () => {
       updateOptimistic(next)
       await markWatched(mediaItemId, watchedAt, collectionSlug)
