@@ -1,3 +1,12 @@
+# [0.19.0](https://github.com/Samuellct/Collec/compare/v0.18.0...v0.19.0) (2026-05-06)
+
+
+### Features
+
+* **analytics:** add Analytics component and layout integration ([197f6e0](https://github.com/Samuellct/Collec/commit/197f6e0d23f4cbdb0fa8c150b4ddb3e0a8df357a))
+* **analytics:** add custom event tracking (collection_view, item_mark, parcours_start, parcours_complete) ([9708989](https://github.com/Samuellct/Collec/commit/9708989ce221c81831200c34893757e1c6d0804e))
+* **analytics:** add Umami service to docker-compose ([1655eca](https://github.com/Samuellct/Collec/commit/1655ecacd149c16ac726be2da0bcebe842bdde27))
+
 # [0.18.0](https://github.com/Samuellct/Collec/compare/v0.17.2...v0.18.0) (2026-05-05)
 
 
