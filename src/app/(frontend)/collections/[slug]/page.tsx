@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { getCurrentUser } from '@/lib/auth/get-current-user'
 import { PosterGrid } from '@/components/collection/PosterGrid'
 import { ProgressBar } from '@/components/collection/ProgressBar'
+import { CollectionViewTracker } from '@/components/analytics/CollectionViewTracker'
 import { markWatched, removeWatched } from './actions'
 import type { CollectionItem, MediaItem, UserCollectionProgress } from '@/payload-types'
 
@@ -104,6 +105,7 @@ export default async function CollectionPage({ params }: Props) {
 
   return (
     <div>
+      <CollectionViewTracker slug={slug} />
       {/* Breadcrumb */}
       <nav className="mb-6 flex items-center gap-2 font-sans text-[0.8rem] text-[var(--muted)]">
         <Link href="/explorer" className="transition-colors hover:text-copper">

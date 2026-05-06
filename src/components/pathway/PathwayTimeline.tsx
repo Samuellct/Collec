@@ -51,6 +51,11 @@ export function PathwayTimeline({
   function handleMarkWatched(mediaItemId: number, watchedAt: string) {
     const next = { ...optimisticWatched, [mediaItemId]: -1 }
     lastMarkTimestampRef.current = new Date().toISOString()
+    const wasEmpty = Object.keys(optimisticWatched).length === 0
+    const allDone = steps.every((s) => s.media_item.id === mediaItemId || !!optimisticWatched[s.media_item.id])
+    window.umami?.track('item_mark', { context: 'parcours', slug: pathwaySlug })
+    if (wasEmpty) window.umami?.track('parcours_start', { slug: pathwaySlug })
+    if (allDone) window.umami?.track('parcours_complete', { slug: pathwaySlug })
     startTransition(async () => {
       updateOptimistic(next)
       await markWatched(mediaItemId, watchedAt, pathwaySlug)

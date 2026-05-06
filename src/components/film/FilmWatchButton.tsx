@@ -54,6 +54,7 @@ export function FilmWatchButton({
   function handleConfirmDate(watchedAt: string) {
     setShowModal(false)
     lastMarkTimestampRef.current = new Date().toISOString()
+    window.umami?.track('item_mark', { context: 'film' })
     startTransition(async () => {
       updateOptimistic(-1)
       await onMarkWatched(mediaItemId, watchedAt)
@@ -63,6 +64,7 @@ export function FilmWatchButton({
   function handleCloseModal() {
     setShowModal(false)
     lastMarkTimestampRef.current = new Date().toISOString()
+    window.umami?.track('item_mark', { context: 'film' })
     startTransition(async () => {
       updateOptimistic(-1)
       await onMarkWatched(mediaItemId, new Date().toISOString())
