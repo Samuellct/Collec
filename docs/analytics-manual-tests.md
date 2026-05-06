@@ -196,8 +196,8 @@ pnpm dev
 | 1. Pas de script sans config | Aucun tag script Umami dans le DOM | ✅ |
 | 2. Script injecté avec config | Tag script avec `data-website-id` présent | ✅ |
 | 3. Pas d'erreur JS sans Umami | `window.umami` = undefined, aucune erreur | ✅ |
-| 4. `parcours_start` au 1er marquage | Log UMAMI parcours_start (à tester avec le contenu) | En attente étape 20 |
-| 4. `parcours_complete` à la fin | Log UMAMI parcours_complete (à tester avec le contenu) | En attente étape 20 |
-| 5. `item_mark` depuis fiche film | Log UMAMI item_mark context film | À tester |
+| 4. `parcours_start` au 1er marquage | Log UMAMI parcours_start (à valider à l'étape 20) | En attente contenu |
+| 4. `parcours_complete` à la fin | Log UMAMI parcours_complete (à valider à l'étape 20) | En attente contenu |
+| 5. `item_mark` depuis fiche film | Log UMAMI item_mark context film | ✅ |
 | 6. Docker Umami démarre | Services healthy sur `docker compose ps` | ✅ |
-| 7. Events reçus dans Umami | Events visibles dans dashboard Umami | À tester |
+| 7. Events reçus dans Umami | Events visibles dans dashboard Umami | ✅ |
