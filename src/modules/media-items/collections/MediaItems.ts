@@ -22,6 +22,7 @@ export const MediaItems: CollectionConfig = {
     useAsTitle: 'title',
     group: 'Catalogue',
     defaultColumns: ['title', 'year', 'media_type', 'source_last_synced_at'],
+    listSearchableFields: ['title', 'original_title'],
     components: {
       beforeList: ['@/modules/media-items/admin/TmdbSearchPanel#TmdbSearchPanel'],
     },
@@ -74,6 +75,7 @@ export const MediaItems: CollectionConfig = {
     {
       name: 'original_title',
       type: 'text',
+      index: true,
     },
     {
       name: 'year',
