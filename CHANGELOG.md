@@ -1,3 +1,17 @@
+# [0.21.0](https://github.com/Samuellct/Collec/compare/v0.20.0...v0.21.0) (2026-05-10)
+
+
+### Bug Fixes
+
+* **seed:** correct tmdbIds in collections dataset ([05ef64e](https://github.com/Samuellct/Collec/commit/05ef64e92f2401264d480860f378fdffeb70116f))
+* **seed:** resolve media_type as numeric FK and add robust lookup fallbacks ([80c9da9](https://github.com/Samuellct/Collec/commit/80c9da9b7fbce9e71a441b63544f376de68cb3f9))
+
+
+### Features
+
+* **media-items:** add original_title to admin list search with index ([89ebc5e](https://github.com/Samuellct/Collec/commit/89ebc5e0f515df1a416deaa46a83ad1900b77776))
+* **seed:** add HTTP-based collections seed script ([5e56b56](https://github.com/Samuellct/Collec/commit/5e56b56a189ac1d229e5c8e8195034ed94ed3740))
+
 # [0.20.0](https://github.com/Samuellct/Collec/compare/v0.19.0...v0.20.0) (2026-05-10)
 
 
