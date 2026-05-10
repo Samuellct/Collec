@@ -14,6 +14,7 @@ import * as migration_20260427_130833_add_director_cast_to_media_items from './2
 import * as migration_20260427_131000_add_fts_indexes_to_media_items from './20260427_131000_add_fts_indexes_to_media_items';
 import * as migration_20260428_add_slug_to_media_items from './20260428_add_slug_to_media_items';
 import * as migration_20260502_100748 from './20260502_100748';
+import * as migration_20260510_add_index_original_title from './20260510_add_index_original_title';
 
 export const migrations = [
   {
@@ -95,5 +96,10 @@ export const migrations = [
     up: migration_20260502_100748.up,
     down: migration_20260502_100748.down,
     name: '20260502_100748',
+  },
+  {
+    up: migration_20260510_add_index_original_title.up,
+    down: migration_20260510_add_index_original_title.down,
+    name: '20260510_add_index_original_title',
   },
 ];
