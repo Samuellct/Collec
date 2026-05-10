@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "generate:types": "payload generate:types",
-    "generate:importmap": "payload generate:importmap"
+    "generate:importmap": "payload generate:importmap",
+    "seed:collections": "tsx src/scripts/seed-collections.ts"
   },
   "dependencies": {
     "@marsidev/react-turnstile": "^1.5.0",

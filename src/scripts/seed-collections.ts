@@ -3,6 +3,28 @@ import { resolve } from 'path'
 import { COLLECTIONS } from './data/collections-seed.ts'
 import type { CollectionDef, ItemDef } from './data/collections-seed.ts'
 
+// Collections dont les médias doivent être importés depuis TMDB (IDs corrigés par l'utilisateur).
+// Toutes les autres collections : les médias sont déjà en base, on fait du lookup seul.
+const IMPORT_SLUGS = new Set([
+  'palme-dor-integrale',
+  'oscar-meilleur-film-integrale',
+  'scorsese-integrale',
+  'miyazaki-integrale',
+  'pixar-integrale',
+  'trilogie-parrain',
+  'univers-terre-du-milieu',
+  'univers-harry-potter',
+  'mission-impossible',
+  'nouvelle-vague-10-essentiels',
+  'new-hollywood-10-fondateurs',
+  'cinema-coreen-essentiels',
+  'films-adolescence',
+  'cinema-espace-10-films',
+])
+
+// Collections ignorées par ce script.
+const SKIP_SLUGS = new Set(['cinema-memes-pantheon'])
+
 function loadEnv() {
   const envPath = resolve(process.cwd(), '.env.local')
   try {
@@ -25,7 +47,6 @@ function sleep(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms))
 }
 
-// Build a query string without encoding keys (Payload uses bracket notation)
 function qs(params: Record<string, string | number>): string {
   return Object.entries(params)
     .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
@@ -92,17 +113,28 @@ async function login(base: string, email: string, password: string): Promise<str
   return data.token
 }
 
-async function upsertCollection(
-  base: string,
-  token: string,
-  col: CollectionDef,
-): Promise<number> {
-  const q = qs({ 'where[slug][equals]': col.slug, limit: 1 })
-  const existing = await apiGet<{ docs: Array<{ id: number }> }>(
+async function upsertCollection(base: string, token: string, col: CollectionDef): Promise<number> {
+  // Lookup by current slug first, then former slug (migration)
+  let id: number | null = null
+
+  const bySlug = await apiGet<{ docs: Array<{ id: number }> }>(
     base,
-    `/api/collections?${q}`,
+    `/api/collections?${qs({ 'where[slug][equals]': col.slug, limit: 1 })}`,
     token,
   )
+  if (bySlug.docs.length > 0) {
+    id = bySlug.docs[0]!.id
+  } else if (col.formerSlug) {
+    const byFormer = await apiGet<{ docs: Array<{ id: number }> }>(
+      base,
+      `/api/collections?${qs({ 'where[slug][equals]': col.formerSlug, limit: 1 })}`,
+      token,
+    )
+    if (byFormer.docs.length > 0) {
+      id = byFormer.docs[0]!.id
+      console.log(`  (migrating slug: ${col.formerSlug} → ${col.slug})`)
+    }
+  }
 
   const payload = {
     slug: col.slug,
@@ -116,19 +148,117 @@ async function upsertCollection(
     display_order: col.display_order,
   }
 
-  if (existing.docs.length > 0) {
-    const id = existing.docs[0]!.id
+  if (id !== null) {
     await apiPatch(base, `/api/collections/${id}`, token, payload)
     return id
   }
 
-  const created = await apiPost<{ doc: { id: number } }>(
-    base,
-    '/api/collections',
-    token,
-    payload,
-  )
+  const created = await apiPost<{ doc: { id: number } }>(base, '/api/collections', token, payload)
   return created.doc.id
+}
+
+// Résout les slugs media-types ('film', 'series') en IDs numériques Payload.
+// media_type est une relationship, donc les filtres where exigent un ID, pas un slug.
+async function loadMediaTypeIds(
+  base: string,
+  token: string,
+): Promise<{ movie: number; tv: number }> {
+  const [filmRes, seriesRes] = await Promise.all([
+    apiGet<{ docs: Array<{ id: number }> }>(
+      base,
+      `/api/media-types?${qs({ 'where[slug][equals]': 'film', limit: 1 })}`,
+      token,
+    ),
+    apiGet<{ docs: Array<{ id: number }> }>(
+      base,
+      `/api/media-types?${qs({ 'where[slug][equals]': 'series', limit: 1 })}`,
+      token,
+    ),
+  ])
+
+  if (filmRes.docs.length === 0 || seriesRes.docs.length === 0) {
+    throw new Error(
+      'media-types introuvables en base. Lance d\'abord : pnpm exec tsx src/modules/media-items/seed/media-types.ts',
+    )
+  }
+
+  return { movie: filmRes.docs[0]!.id, tv: seriesRes.docs[0]!.id }
+}
+
+// Cherche un média en base par tmdb_id + media_type (ID numérique).
+async function findByTmdbId(
+  base: string,
+  token: string,
+  tmdbId: number,
+  mediaTypeId: number,
+): Promise<number | null> {
+  const q = qs({
+    'where[and][0][tmdb_id][equals]': tmdbId,
+    'where[and][1][media_type][equals]': mediaTypeId,
+    limit: 1,
+  })
+  const data = await apiGet<{ docs: Array<{ id: number }> }>(base, `/api/media-items?${q}`, token)
+  return data.docs[0]?.id ?? null
+}
+
+// Cherche un média en base par original_title exact + media_type (ID numérique).
+// Fallback pour les items importés avec un titre FR mais dont l'original_title est en anglais.
+async function findByOriginalTitle(
+  base: string,
+  token: string,
+  title: string,
+  mediaTypeId: number,
+  year: number,
+): Promise<number | null> {
+  const q = qs({
+    'where[and][0][original_title][equals]': title,
+    'where[and][1][media_type][equals]': mediaTypeId,
+    limit: 10,
+  })
+  const data = await apiGet<{ docs: Array<{ id: number; release_year?: number; year?: number }> }>(
+    base,
+    `/api/media-items?${q}`,
+    token,
+  )
+  if (data.docs.length === 0) return null
+  if (data.docs.length === 1) return data.docs[0]!.id
+
+  const match = data.docs.find((d) => (d.release_year ?? d.year) === year)
+  if (match) return match.id
+
+  process.stdout.write(`[ambiguous original_title "${title}", took first result] `)
+  return data.docs[0]!.id
+}
+
+// Cherche un média en base par titre exact + media_type (ID numérique).
+// En cas de résultats multiples (ex. "Daredevil" 2015 et 2025), filtre par année si disponible.
+async function findByTitle(
+  base: string,
+  token: string,
+  title: string,
+  mediaTypeId: number,
+  year: number,
+): Promise<number | null> {
+  const q = qs({
+    'where[and][0][title][equals]': title,
+    'where[and][1][media_type][equals]': mediaTypeId,
+    limit: 10,
+  })
+  const data = await apiGet<{ docs: Array<{ id: number; release_year?: number; year?: number }> }>(
+    base,
+    `/api/media-items?${q}`,
+    token,
+  )
+  if (data.docs.length === 0) return null
+  if (data.docs.length === 1) return data.docs[0]!.id
+
+  // Plusieurs résultats : on tente de discriminer par année
+  const match = data.docs.find((d) => (d.release_year ?? d.year) === year)
+  if (match) return match.id
+
+  // Aucune discrimination possible : on prend le premier et on avertit
+  process.stdout.write(`[ambiguous title "${title}", took first result] `)
+  return data.docs[0]!.id
 }
 
 async function searchTmdbId(
@@ -157,12 +287,10 @@ async function importMediaItem(
   tmdbId: number,
   mediaType: 'movie' | 'tv',
 ): Promise<number> {
-  const data = await apiPost<{ id: number }>(
-    base,
-    '/api/media-items/import-tmdb',
-    token,
-    { tmdbId, mediaType },
-  )
+  const data = await apiPost<{ id: number }>(base, '/api/media-items/import-tmdb', token, {
+    tmdbId,
+    mediaType,
+  })
   return data.id
 }
 
@@ -177,11 +305,7 @@ async function linkToCollection(
     'where[and][1][media_item][equals]': mediaItemId,
     limit: 1,
   })
-  const existing = await apiGet<{ docs: unknown[] }>(
-    base,
-    `/api/collection-items?${q}`,
-    token,
-  )
+  const existing = await apiGet<{ docs: unknown[] }>(base, `/api/collection-items?${q}`, token)
   if (existing.docs.length > 0) return 'already_linked'
 
   await apiPost(base, '/api/collection-items', token, {
@@ -189,6 +313,58 @@ async function linkToCollection(
     media_item: mediaItemId,
   })
   return 'added'
+}
+
+// ---------------------------------------------------------------------------
+// Résolution d'un média : lookup en base, puis import si autorisé
+// ---------------------------------------------------------------------------
+
+async function resolveMediaItem(
+  base: string,
+  token: string,
+  item: ItemDef,
+  canImport: boolean,
+  mediaTypeIds: { movie: number; tv: number },
+): Promise<number | null> {
+  const mediaTypeId = mediaTypeIds[item.mediaType]
+
+  // 0. Payload ID direct (bypass total — fiable même si tmdb_id est null en base)
+  if (item.payloadId) {
+    const data = await apiGet<{ id?: number }>(base, `/api/media-items/${item.payloadId}`, token)
+    if (data.id) return data.id
+    process.stdout.write(`[payloadId ${item.payloadId} introuvable] `)
+  }
+
+  // 1. Lookup par tmdbId (si fourni dans le seed)
+  if (item.tmdbId) {
+    await sleep(100)
+    const id = await findByTmdbId(base, token, item.tmdbId, mediaTypeId)
+    if (id !== null) return id
+  }
+
+  // 2. Lookup par titre exact (champ title)
+  await sleep(100)
+  const idByTitle = await findByTitle(base, token, item.title, mediaTypeId, item.year)
+  if (idByTitle !== null) return idByTitle
+
+  // 3. Lookup par original_title (items importés avec titre FR, original_title EN)
+  await sleep(100)
+  const idByOriginal = await findByOriginalTitle(base, token, item.title, mediaTypeId, item.year)
+  if (idByOriginal !== null) return idByOriginal
+
+  // 4. Import depuis TMDB (uniquement pour les collections autorisées)
+  if (!canImport) return null
+
+  let tmdbId = item.tmdbId
+  if (!tmdbId) {
+    await sleep(150)
+    const found = await searchTmdbId(base, token, item)
+    if (!found) return null
+    tmdbId = found
+  }
+
+  await sleep(150)
+  return importMediaItem(base, token, tmdbId, item.mediaType)
 }
 
 // ---------------------------------------------------------------------------
@@ -203,23 +379,27 @@ async function run() {
   const password = process.env.SEED_ADMIN_PASSWORD
 
   if (!email || !password) {
-    throw new Error(
-      'SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD must be set in .env.local',
-    )
+    throw new Error('SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD must be set in .env.local')
   }
 
   console.log(`Connecting to ${base}...`)
   const token = await login(base, email, password)
-  console.log('Authenticated.\n')
+  console.log('Authenticated.')
 
-  const total = COLLECTIONS.length
+  const mediaTypeIds = await loadMediaTypeIds(base, token)
+  console.log(`media-types — film: ${mediaTypeIds.movie}, series: ${mediaTypeIds.tv}\n`)
+
+  const collections = COLLECTIONS.filter((c) => !SKIP_SLUGS.has(c.slug))
+  const total = collections.length
   let globalAdded = 0
   let globalAlready = 0
   let globalErrors = 0
+  let globalNotFound = 0
 
-  for (let i = 0; i < COLLECTIONS.length; i++) {
-    const col = COLLECTIONS[i]!
-    process.stdout.write(`[${i + 1}/${total}] ${col.title} — `)
+  for (let i = 0; i < collections.length; i++) {
+    const col = collections[i]!
+    const canImport = IMPORT_SLUGS.has(col.slug)
+    process.stdout.write(`[${i + 1}/${total}] ${col.title}${canImport ? ' [import]' : ' [link-only]'} — `)
 
     let collectionId: number
     try {
@@ -233,27 +413,21 @@ async function run() {
     let added = 0
     let already = 0
     let errors = 0
+    let notFound = 0
 
     for (const item of col.items) {
       try {
-        // Resolve TMDB ID
-        let tmdbId = item.tmdbId
-        if (!tmdbId) {
-          await sleep(150)
-          const found = await searchTmdbId(base, token, item)
-          if (!found) {
-            process.stdout.write('?')
-            errors++
-            continue
+        const mediaItemId = await resolveMediaItem(base, token, item, canImport, mediaTypeIds)
+
+        if (mediaItemId === null) {
+          process.stdout.write('?')
+          notFound++
+          if (!canImport) {
+            console.warn(`\n  [NOT FOUND] "${item.title}" (${item.year}) — introuvable en base`)
           }
-          tmdbId = found
+          continue
         }
 
-        // Import media item via existing endpoint (full upsert with hooks)
-        await sleep(150)
-        const mediaItemId = await importMediaItem(base, token, tmdbId, item.mediaType)
-
-        // Link to collection
         const status = await linkToCollection(base, token, collectionId, mediaItemId)
         if (status === 'added') {
           process.stdout.write('+')
@@ -270,24 +444,20 @@ async function run() {
       }
     }
 
-    console.log(
-      ` — ${added} added, ${already} already linked, ${errors} errors`,
-    )
+    console.log(` — ${added} added, ${already} already linked, ${notFound} not found, ${errors} errors`)
     globalAdded += added
     globalAlready += already
     globalErrors += errors
+    globalNotFound += notFound
   }
 
-  const total_items = COLLECTIONS.reduce((sum, c) => sum + c.items.length, 0)
-  console.log(
-    `\nDone. ${total_items} items across ${total} collections.`,
-  )
-  console.log(
-    `  ${globalAdded} added, ${globalAlready} already linked, ${globalErrors} errors/skipped.`,
-  )
-  if (globalErrors > 0) {
+  const totalItems = collections.reduce((sum, c) => sum + c.items.length, 0)
+  console.log(`\nDone. ${totalItems} items across ${total} collections.`)
+  console.log(`  ${globalAdded} added, ${globalAlready} already linked, ${globalNotFound} not found, ${globalErrors} errors.`)
+
+  if (globalNotFound > 0) {
     console.log(
-      '  Items with errors were skipped. Add their tmdbId to the dataset and rerun.',
+      '  Items "not found" dans les collections link-only doivent être importés manuellement via Payload.',
     )
   }
 }
