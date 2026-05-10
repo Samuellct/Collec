@@ -1,6 +1,6 @@
 {
   "name": "collec-club",
-  "version": "0.19.0",
+  "version": "0.20.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -12,7 +12,7 @@
     "test:watch": "vitest",
     "generate:types": "payload generate:types",
     "generate:importmap": "payload generate:importmap",
-    "seed:collections": "tsx src/scripts/seed-collections.ts"
+    "seed:collections": "tsx --env-file .env.local src/scripts/seed-collections.ts"
   },
   "dependencies": {
     "@marsidev/react-turnstile": "^1.5.0",

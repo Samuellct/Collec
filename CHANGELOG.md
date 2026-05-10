@@ -1,3 +1,15 @@
+# [0.20.0](https://github.com/Samuellct/Collec/compare/v0.19.0...v0.20.0) (2026-05-10)
+
+
+### Bug Fixes
+
+* **seed:** rewrite seed-collections to use pg directly, avoid Payload/Next.js init ([915c135](https://github.com/Samuellct/Collec/commit/915c135d263afdc3345f60f58e96fc0be8d0ec43))
+
+
+### Features
+
+* **seed:** add seed-collections script for automated V1 content import ([96fa30b](https://github.com/Samuellct/Collec/commit/96fa30b1aef2e220f4ad11833cc19d1f6264dc82))
+
 # [0.19.0](https://github.com/Samuellct/Collec/compare/v0.18.0...v0.19.0) (2026-05-06)
 
 
